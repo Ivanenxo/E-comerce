@@ -65,8 +65,11 @@ export class ItemListComponent {
 
     this.itemService.getItems(param2).subscribe(
       (data) => {
-        this.items = data;
-        this.groupItemsByMarca();
+        this.items = data.sort((a : any, b : any ) =>{
+          if(a.Marca < b.Marca) return -1;
+          if(a.Marca > b.Marca) return 1;
+          return 0;
+        });
         Swal.close();
         if (this.items.length === 0) {
           Swal.fire({
@@ -90,17 +93,6 @@ export class ItemListComponent {
       }
     );
 
-  }
-
-  private groupItemsByMarca(): void {
-    this.groupedItems = this.items.reduce((groups, item) => {
-      const marca = item.Marca;
-      if (!groups[marca]) {
-        groups[marca] = [];
-      }
-      groups[marca].push(item);
-      return groups;
-    }, {});
   }
 
 }
