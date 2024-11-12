@@ -8,7 +8,7 @@ import { AuthService } from '../auth.service';
 })
 export class ItemService {
 
-  private apiUrl = 'http://services.matrixsql.com:8008/api/Catalogo/GetByKeysWord';
+  private apiUrl = 'https://services.matrixsql.com:8008/api/Catalogo/GetByKeysWord';
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
