@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { delay } from 'rxjs';
 import { ItemService } from '../../services/item.service';
 
 
@@ -30,7 +31,7 @@ export class ItemListComponent {
   }
 
   private fetchItems(param2: string): void {
-    this.itemService.getItems(param2).subscribe(
+    this.itemService.getItems(param2).pipe(delay(1000)).subscribe(
       (data) => {
         this.items = data;
       },
