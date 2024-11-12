@@ -43,8 +43,10 @@
                {{item.Nombre}} - <h2 class="font-bold"> {{marca.key}}</h2>
             </h3>
             <p class="text-sm text-[#143e66] dark:text-[#bfddf8] mt-2">
-              <strong>${{item.PrecioVenta}}</strong> <br>
+              <strong>{{item.PrecioVenta | currency:'COP':'symbol':'1.2-2' }}</strong> <br>
               Serie: {{item.Serie}} <br>
+              Referencia: {{item.Referencia}} <br>
+              Codigo: {{item.Codigo}}
             </p>
             <p class="text-sm text-[#143e66] dark:text-[#bfddf8] mt-2" [ngClass]="{'text-verde': item.Disponibilidad === 'DISPONIBLE', 'text-rojo': item.Disponibilidad === 'CONSULTAR_ASESOR'}">
               Disponibilidad : <strong> {{item.Disponibilidad}} </strong>
