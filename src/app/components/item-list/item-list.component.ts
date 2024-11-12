@@ -17,16 +17,14 @@ export class ItemListComponent {
   }
 
   items: any[] = [];
-   param2: string = '';
+  groupedItems: { [marca: string]: any[] } = {};
+  param2: string = '';
   searchExecuted  = false;
-  loading = false;
-
 
   constructor(private itemService: ItemService) { }
 
   onSearch(): void {
     this.searchExecuted = true;
-    this.loading = true;
 
     if (this.param2) {
       this.fetchItems(this.param2);
@@ -68,6 +66,7 @@ export class ItemListComponent {
     this.itemService.getItems(param2).subscribe(
       (data) => {
         this.items = data;
+        this.groupItemsByMarca();
         Swal.close();
         if (this.items.length === 0) {
           Swal.fire({
@@ -91,6 +90,17 @@ export class ItemListComponent {
       }
     );
 
+  }
+
+  private groupItemsByMarca(): void {
+    this.groupedItems = this.items.reduce((groups, item) => {
+      const marca = item.Marca;
+      if (!groups[marca]) {
+        groups[marca] = [];
+      }
+      groups[marca].push(item);
+      return groups;
+    }, {});
   }
 
 }
