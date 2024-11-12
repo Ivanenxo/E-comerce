@@ -20,6 +20,19 @@
 <div *ngIf="searchExecuted && items.length > 0; else noItems">
   <h2>Productos encontrados</h2>
 
+  <div class="flex flex-col mb-4">
+    <label for="marcaFilter" class="text-gray-700 font-semibold mb-1">Filtrar por marca:</label>
+    <select
+      id="marcaFilter"
+      [(ngModel)]="selectedMarca"
+      (change)="onFilterByMarca()"
+      class="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      <option value="">Todas las marcas</option>
+      <option *ngFor="let marca of marcas" [value]="marca">{{ marca }}</option>
+    </select>
+  </div>
+
   <div *ngFor="let marca of groupedItems | keyvalue">
     <h3 class="text-lg font-bold underline text-[#0d2744] flex items-center">{{ marca.key }}</h3>
     <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
