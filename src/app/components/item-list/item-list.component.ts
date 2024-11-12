@@ -70,6 +70,7 @@ export class ItemListComponent {
       (data) => {
         this.items = data;
         this.groupItemsByMarca();
+        this.marcas = [...new Set(this.items.map(item => item.Marca))];
         Swal.close();
         if (this.items.length === 0) {
           Swal.fire({
