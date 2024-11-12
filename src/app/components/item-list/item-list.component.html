@@ -21,9 +21,11 @@
 
 
 <div *ngIf="searchExecuted && items.length > 0; else noItems">
-
-
   <h2>Productos encontrados</h2>
+
+
+  <div *ngFor="let marca of groupedItems | keyvalue">
+    <h3 class="text-lg font-bold underline text-[#0d2744] flex items-center">{{ marca.key }}</h3>
   <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
     <li *ngFor="let item of items">
     <div class="bg-white shadow-md rounded-lg overflow-hidden p-4 relative">
@@ -51,6 +53,7 @@
 
     </li>
   </ul>
+  </div>
 </div>
 <ng-template #noItems>
   <p *ngIf="searchExecuted">No se encontraron items.</p>
