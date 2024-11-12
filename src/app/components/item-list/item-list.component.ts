@@ -71,6 +71,7 @@ export class ItemListComponent {
       (data) => {
         this.items = data;
         this.groupItemsByMarca();
+        this.onFilterByMarca();
         this.marcas = [...new Set(this.items.map(item => item.Marca))];
         Swal.close();
         if (this.items.length === 0) {
