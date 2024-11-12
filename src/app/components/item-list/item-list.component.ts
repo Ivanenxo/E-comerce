@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { delay } from 'rxjs';
 import { ItemService } from '../../services/item.service';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -20,29 +21,73 @@ export class ItemListComponent {
   searchExecuted  = false;
   loading = false;
 
+
   constructor(private itemService: ItemService) { }
 
   onSearch(): void {
     this.searchExecuted = true;
     this.loading = true;
+
     if (this.param2) {
       this.fetchItems(this.param2);
     } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Oops...',
+        text: 'Debes ingresar el nombre o referencia del producto para buscar.'
+      });
       console.warn('Ambos campos deben estar llenos para realizar la búsqueda');
-      this.loading = false;
+
     }
   }
 
   private fetchItems(param2: string): void {
+
+    let timerInterval: any;
+
+
+    Swal.fire({
+      title: 'Cargando...',
+      html: 'Por favor, espera mientras obtenemos los datos.',
+      timerProgressBar: true,
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+        const timer = Swal.getHtmlContainer()?.querySelector('b');
+        timerInterval = setInterval(() => {
+          if (timer) {
+            timer.textContent = `${Swal.getTimerLeft()}`;
+          }
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    });
+
     this.itemService.getItems(param2).subscribe(
       (data) => {
         this.items = data;
-        this.loading = false;
+        Swal.close();
+        if (this.items.length === 0) {
+          Swal.fire({
+            icon: 'info',
+            title: 'Sin resultados',
+            text: 'No se encontraron productos para el criterio de búsqueda.'
+          });
+        }
+
       },
       (error) => {
         console.error('Error al obtener los items', error);
-        this.items = [];
-      this.loading = false;
+        Swal.close();
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un problema al obtener los datos. Inténtalo de nuevo más tarde.'
+        });
+
       }
     );
 
