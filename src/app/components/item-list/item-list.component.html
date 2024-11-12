@@ -21,14 +21,14 @@
   <h2>Productos encontrados</h2>
 
   <div *ngFor="let marca of groupedItems | keyvalue">
-    <h3 class="text-xl font-semibold mt-8">{{ marca.key }}</h3>
+    <h3 class="text-lg font-bold underline text-[#0d2744] flex items-center">{{ marca.key }}</h3>
     <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
       <li *ngFor="let item of marca.value">
         <div class="bg-white shadow-md rounded-lg overflow-hidden p-4 relative">
           <div class="relative z-10">
             <img src="https://services.matrixsql.com:8008/api/Productos/foto/{{item.Codigo}}-1.jpg" alt="Imagen" (error)="onImageError($event)">
             <h3 class="text-lg font-bold text-[#0d2744] flex items-center">
-               {{item.Nombre}}
+               {{item.Nombre}} - <h2 class="font-bold"> {{marca.key}}</h2>
             </h3>
             <p class="text-sm text-[#143e66] dark:text-[#bfddf8] mt-2">
               <strong>${{item.PrecioVenta}}</strong> <br>
