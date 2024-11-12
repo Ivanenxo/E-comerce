@@ -21,6 +21,10 @@
 
 
 <div *ngIf="searchExecuted && items.length > 0; else noItems">
+  <div *ngIf="loading" class="loading-spinner">
+    <!-- Aquí puedes poner un icono de carga, como un spinner o texto -->
+    Cargando...
+  </div>
   <h2>Productos encontrados</h2>
   <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
     <li *ngFor="let item of items">

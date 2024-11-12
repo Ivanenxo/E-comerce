@@ -18,15 +18,18 @@ export class ItemListComponent {
   items: any[] = [];
    param2: string = '';
   searchExecuted  = false;
+  loading = false;
 
   constructor(private itemService: ItemService) { }
 
   onSearch(): void {
     this.searchExecuted = true;
+    this.loading = true;
     if (this.param2) {
       this.fetchItems(this.param2);
     } else {
       console.warn('Ambos campos deben estar llenos para realizar la búsqueda');
+      this.loading = false;
     }
   }
 
@@ -34,9 +37,12 @@ export class ItemListComponent {
     this.itemService.getItems(param2).subscribe(
       (data) => {
         this.items = data;
+        this.loading = false;
       },
       (error) => {
         console.error('Error al obtener los items', error);
+        this.items = [];
+      this.loading = false;
       }
     );
 
