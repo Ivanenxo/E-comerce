@@ -18,9 +18,9 @@ export class ItemListComponent {
 
   items: any[] = [];
   groupedItems: { [marca: string]: any[] } = {};
+  displayedItems: { [marca: string]: any[] } = {};
   param2: string = '';
   searchExecuted  = false;
-  filteredItems: any[] = [];
   marcas: string[] = [];
   selectedMarca: string = '';
 
@@ -108,10 +108,13 @@ export class ItemListComponent {
   }
 
   onFilterByMarca(): void {
+    // Filtrar groupedItems según la marca seleccionada
     if (this.selectedMarca) {
-      this.filteredItems = this.items.filter(item => item.Marca === this.selectedMarca);
+      this.displayedItems = {
+        [this.selectedMarca]: this.groupedItems[this.selectedMarca] || []
+      };
     } else {
-      this.filteredItems = this.items; // Muestra todos los items si no se selecciona ninguna marca
+      this.displayedItems = { ...this.groupedItems }; // Mostrar todas las marcas si no se selecciona ninguna
     }
   }
 
