@@ -31,7 +31,7 @@ export class ItemListComponent {
   }
 
   private fetchItems(param2: string): void {
-    this.itemService.getItems(param2).pipe(delay(1000)).subscribe(
+    this.itemService.getItems(param2).subscribe(
       (data) => {
         this.items = data;
       },
