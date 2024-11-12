@@ -31,6 +31,7 @@ export class ItemListComponent {
 
     if (this.param2) {
       this.fetchItems(this.param2);
+      this.onFilterByMarca();
     } else {
       Swal.fire({
         icon: 'warning',
@@ -70,7 +71,6 @@ export class ItemListComponent {
       (data) => {
         this.items = data;
         this.groupItemsByMarca();
-        this.onFilterByMarca();
         this.marcas = [...new Set(this.items.map(item => item.Marca))];
         Swal.close();
         if (this.items.length === 0) {
