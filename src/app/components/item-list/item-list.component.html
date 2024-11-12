@@ -26,7 +26,7 @@
       (change)="onFilterByMarca()"
       class="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
     >
-      <option value="">Todas las marcas</option>
+      <option value="Todas las marcas">Filtra por marca</option>
       <option *ngFor="let marca of marcas" [value]="marca">{{ marca }}</option>
     </select>
   </div>

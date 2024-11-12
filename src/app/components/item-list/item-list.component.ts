@@ -108,7 +108,6 @@ export class ItemListComponent {
   }
 
   onFilterByMarca(): void {
-    // Filtrar groupedItems según la marca seleccionada
     if (this.selectedMarca) {
       this.displayedItems = {
         [this.selectedMarca]: this.groupedItems[this.selectedMarca] || []
