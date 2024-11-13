@@ -26,7 +26,8 @@ export class LoginComponent {
         if (token) {
           localStorage.setItem('token', token);
           localStorage.setItem('cedula', cedula);
-
+          this.router.navigate(['/buscar']);
+        console.log('Login Sucefull');
         }
 
         console.log('Login exitoso:', token);
