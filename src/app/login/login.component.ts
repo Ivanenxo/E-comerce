@@ -18,13 +18,23 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   onLogin(): void {
-    const isAuthenticated = this.authService.login(this.cedula, this.password);
-    if (isAuthenticated) {
-      this.router.navigate(['/buscar']);
-      console.log('Login Sucefull')
-    } else {
-      this.loginError = true;
-    }
+    this.authService.login(this.cedula, this.password).subscribe(
+      (response) => {
+
+        const token = response.Token;
+        const cedula = response.User;
+        if (token) {
+          localStorage.setItem('token', token);
+          localStorage.setItem('cedula', cedula);
+
+        }
+
+        console.log('Login exitoso:', token);
+      },
+      (error) => {
+        console.error('Error al iniciar sesión:', error);
+      }
+    );
   }
 
 }

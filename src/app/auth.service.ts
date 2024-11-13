@@ -1,19 +1,22 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private validCredentials = { cedula: '1101691128', password: '123' };
+  private apiUrl = 'https://services.matrixsql.com:8008/api/Login/Autenticate';
 
-  constructor() { }
-  login(cedula: string, password: string): boolean {
-    if (cedula === cedula && password === this.validCredentials.password) {
-      localStorage.setItem('cedula', cedula);
-      return true;
-    }
-    return false;
+  constructor(private http : HttpClient) { }
+  login(cedula: string, password: string): Observable<any> {
+    const body ={
+      User : cedula,
+      Password : password
+    };
+    return this.http.post<any>(this.apiUrl, body);
+
   }
 
   logout(): void {

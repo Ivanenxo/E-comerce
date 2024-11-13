@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { delay, finalize, Observable, tap } from 'rxjs';
 import { AuthService } from '../auth.service';
 
@@ -14,8 +14,11 @@ export class ItemService {
 
   getItems(param2: string): Observable<any> {
     const cedula = this.authService.getCedula();
-    if(cedula){
+    const token = localStorage.getItem('token');
+    if(cedula && token){
       const url = `${this.apiUrl}/${cedula}/${param2}`;
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
       return this.http.get<any>(url).pipe(delay(2000),tap(() => console.log('Datos Cargados completamente')),
       finalize(() => console.log('Carga de datos Finalizada ')));
     }else{
