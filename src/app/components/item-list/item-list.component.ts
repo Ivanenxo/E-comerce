@@ -30,6 +30,7 @@ export class ItemListComponent {
     this.searchExecuted = true;
 
     if (this.param2) {
+      this.selectedMarca = '';
       this.fetchItems(this.param2);
       this.onFilterByMarca();
     } else {

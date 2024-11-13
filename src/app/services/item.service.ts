@@ -19,7 +19,7 @@ export class ItemService {
       const url = `${this.apiUrl}/${cedula}/${param2}`;
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-      return this.http.get<any>(url).pipe(delay(2000),tap(() => console.log('Datos Cargados completamente')),
+      return this.http.get<any>(url, {headers}).pipe(delay(2000),tap(() => console.log('Datos Cargados completamente')),
       finalize(() => console.log('Carga de datos Finalizada ')));
     }else{
       throw new Error('Usuario no autenticado');
