@@ -23,6 +23,7 @@ export class ItemListComponent {
   searchExecuted  = false;
   marcas: string[] = [];
   selectedMarca: string = '';
+  selectedItem: any = null;
 
   constructor(private itemService: ItemService) { }
 
@@ -116,8 +117,16 @@ export class ItemListComponent {
         [this.selectedMarca]: this.groupedItems[this.selectedMarca] || []
       };
     } else {
-      this.displayedItems = { ...this.groupedItems }; // Mostrar todas las marcas si no se selecciona ninguna
+      this.displayedItems = { ...this.groupedItems };
     }
+  }
+
+  selectItem(item: any): void {
+    this.selectedItem = item;
+  }
+
+  closeDetail(): void {
+    this.selectedItem = null;
   }
 
 }
