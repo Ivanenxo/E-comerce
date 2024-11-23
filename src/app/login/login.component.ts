@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NgModule } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -23,9 +23,11 @@ export class LoginComponent {
 
         const token = response.Token;
         const cedula = response.User;
+        const userName = response.Nombre;
         if (token) {
           localStorage.setItem('token', token);
           localStorage.setItem('cedula', cedula);
+          localStorage.setItem('username',userName);
           this.router.navigate(['/buscar']);
         console.log('Login Sucefull');
         }

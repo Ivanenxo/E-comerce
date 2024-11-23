@@ -21,11 +21,18 @@
   <!-- Detalles del ítem seleccionado -->
   <div class="max-w-md mx-auto p-8 bg-white shadow-md rounded-lg">
     <h2 class="text-2xl font-bold text-[#0d2744] mb-4">{{ selectedItem.Nombre }}</h2>
-    <img src="https://services.matrixsql.com:8008/api/Productos/foto/{{selectedItem.Codigo}}-1.jpg" alt="Imagen del producto">
+    <img src="{{apiUrl}}api/Productos/foto/{{selectedItem.Codigo}}-1.jpg" alt="Imagen" (error)="onImageError($event)">
     <p class="text-lg text-gray-700 mt-4"><strong>Precio:</strong> {{ selectedItem.PrecioVenta | currency }}</p>
     <p class="text-sm text-gray-500 mt-2"><strong>Serie:</strong> {{ selectedItem.Serie }}</p>
     <p class="text-sm text-gray-500 mt-2"><strong>Referencia:</strong> {{ selectedItem.Referencia }}</p>
     <p class="text-sm text-gray-500 mt-2"><strong>Disponibilidad:</strong> {{ selectedItem.Disponibilidad }}</p>
+
+    <button
+      class="w-full p-2 mt-4 text-white bg-green-500 rounded hover:bg-green-600 focus:outline-none"
+      (click)="addToCart(selectedItem.Codigo)"
+    >
+      Añadir al carrito
+    </button>
 
     <button
       class="w-full p-2 mt-4 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none"
@@ -58,7 +65,7 @@
       <li *ngFor="let item of marca.value">
         <div class="bg-white shadow-md rounded-lg overflow-hidden p-4 relative" (click)="selectItem(item)">
           <div class="relative z-10">
-            <img src="https://services.matrixsql.com:8008/api/Productos/foto/{{item.Codigo}}-1.jpg" alt="Imagen" (error)="onImageError($event)">
+            <img [src]="apiUrl + 'api/Productos/foto/' + item.Codigo + '-1.jpg'" alt="Imagen" (error)="onImageError($event)">
             <h3 class="text-lg font-bold text-[#0d2744] flex items-center">
                {{item.Nombre}} - <h2 class="font-bold"> {{marca.key}}</h2>
             </h3>

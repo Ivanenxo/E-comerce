@@ -1,0 +1,97 @@
+<!-- Barra de usuario -->
+<div *ngIf="user" class="bg-gray-100 p-4 shadow-md flex items-center">
+  <div>
+    <h3 class="text-lg font-bold">Bienvenido: {{ user.username }}</h3>
+  </div>
+  <button class="ml-auto text-red-500 hover:underline" (click)="logout()">Cerrar sesión</button>
+  <button class="ml-4 text-blue-500 relative" (click)="toggleCart()">
+    🛒 Carrito
+    <span
+      *ngIf="cartItems.length > 0"
+      class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+    >
+      {{ cartItemCount }}
+    </span>
+  </button>
+</div>
+
+<!-- Carrito -->
+<div *ngIf="cartVisible" class="bg-white p-4 shadow-md mt-4">
+  <h3 class="text-lg font-bold mb-4">Carrito</h3>
+  <div *ngIf="cartItems.length > 0; else emptyCart">
+    <ul>
+      <li
+        *ngFor="let item of cartItems"
+        class="flex items-center justify-between border-b py-2"
+      >
+        <!-- Imagen y nombre del producto -->
+        <div class="flex items-center space-x-4">
+          <img
+            [src]="apiUrl + 'api/Productos/foto/' + item.Codigo + '-1.jpg'"
+            alt="{{ item.Nombre }}"
+            class="w-12 h-12 rounded object-cover"
+            (error)="onImageError($event)"
+          />
+          <div>
+            <strong class="text-sm">{{ item.NoMbreFull }}</strong>
+            <p
+              [ngClass]="{
+                'text-green-500': item.Disponibilidad === 'DISPONIBLE',
+                'text-orange-500': item.Disponibilidad === 'SOBRE_PEDIDO',
+                'text-yellow-500': item.Disponibilidad === 'CONSULTAR_ASESOR'
+              }"
+              class="text-xs"
+            >
+              {{ item.Disponibilidad }}
+            </p>
+          </div>
+
+        </div>
+
+
+
+        <!-- Controles de cantidad -->
+        <div class="flex items-center space-x-2">
+          <!-- Botón de menos -->
+          <button
+            class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+            (click)="decreaseQuantity(item)"
+          >
+            -
+          </button>
+
+          <!-- Input de cantidad -->
+          <input
+            type="number"
+            [(ngModel)]="item.Cantidad"
+            class="w-16 text-center border rounded"
+            (change)="updateQuantity(item)"
+          />
+
+          <!-- Botón de más -->
+          <button
+            class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+            (click)="increaseQuantity(item)"
+          >
+            +
+          </button>
+        </div>
+
+        <!-- Precio total del producto -->
+        <div class="text-sm font-semibold text-gray-700">
+          {{ calculateTotalPrice(item) | currency:'USD' }}
+        </div>
+      </li>
+    </ul>
+
+    <!-- Precio total del carrito -->
+    <div class="mt-4 text-right text-lg font-bold">
+      Total: {{ calculateCartTotal() | currency:'USD' }}
+    </div>
+  </div>
+
+  <!-- Mensaje si el carrito está vacío -->
+  <ng-template #emptyCart>
+    <p class="text-center text-gray-500">Aún no hay productos en el carrito.</p>
+  </ng-template>
+</div>
