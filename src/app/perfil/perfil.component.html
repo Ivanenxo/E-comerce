@@ -3,7 +3,8 @@
   <div>
     <h3 class="text-lg font-bold">Bienvenido: {{ user.username }}</h3>
   </div>
-  <button class="ml-auto text-red-500 hover:underline" (click)="logout()">Cerrar sesión</button>
+  <button class="ml-4 text-blue-500 relative " (click)="goToTienda()">🏪 Tienda</button>
+  <button class="ml-4 text-blue-500 relative " (click)="goToOrdenes()">🗒️ Mis ordenes</button>
   <button class="ml-4 text-blue-500 relative" (click)="toggleCart()">
     🛒 Carrito
     <span
@@ -13,6 +14,7 @@
       {{ cartItemCount }}
     </span>
   </button>
+  <button class="ml-auto text-red-500 hover:underline" (click)="logout()">Cerrar sesión</button>
 </div>
 
 <!-- Carrito -->

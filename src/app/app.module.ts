@@ -10,13 +10,15 @@ import { ItemListComponent } from './components/item-list/item-list.component';
 import { LoginComponent } from './login/login.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { AuthService } from './services/auth.service';
+import { OrdenesComponent } from './components/ordenes/ordenes.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ItemListComponent,
     LoginComponent,
-    PerfilComponent
+    PerfilComponent,
+    OrdenesComponent
   ],
   imports: [
     BrowserModule,

@@ -52,6 +52,13 @@ export class PerfilComponent implements OnInit {
     this.loadCart();
   }
 
+  goToTienda():void{
+    this.router.navigate(['/buscar'])
+  }
+
+  goToOrdenes(): void{
+    this.router.navigate(['/ordenes']);
+  }
 
 
   logout(): void {
