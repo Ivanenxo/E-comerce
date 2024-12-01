@@ -159,7 +159,12 @@ export class PerfilComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cerrar cotización', error);
-        // Maneja el error aquí
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un problema al Cerrar la cotizacion. Por favor, intenta nuevamente.',
+          footer: `<small>Detalles: ${error.message}</small>`
+        });
       },
       complete: () => {
         console.log('Se finaliza cierre');
