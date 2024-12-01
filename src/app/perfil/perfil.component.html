@@ -23,74 +23,79 @@
   <div *ngIf="cartItems.length > 0; else emptyCart">
     <ul>
       <li
-        *ngFor="let item of cartItems"
-        class="flex items-center justify-between border-b py-2"
-      >
-        <!-- Imagen y nombre del producto -->
-        <div class="flex items-center space-x-4">
-          <img
-            [src]="apiUrl + 'api/Productos/foto/' + item.Codigo + '-1.jpg'"
-            alt="{{ item.Nombre }}"
-            class="w-12 h-12 rounded object-cover"
-            (error)="onImageError($event)"
-          />
-          <div>
-            <strong class="text-sm">{{ item.NoMbreFull }}</strong>
-            <p
-              [ngClass]="{
-                'text-green-500': item.Disponibilidad === 'DISPONIBLE',
-                'text-orange-500': item.Disponibilidad === 'SOBRE_PEDIDO',
-                'text-yellow-500': item.Disponibilidad === 'CONSULTAR_ASESOR'
-              }"
-              class="text-xs"
-            >
-              {{ item.Disponibilidad }}
-            </p>
-          </div>
-
-        </div>
-
-
-
-        <!-- Controles de cantidad -->
-        <div class="flex items-center space-x-2">
-          <!-- Botón de menos -->
-          <button
-            class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-            (click)="decreaseQuantity(item)"
+      *ngFor="let item of cartItems"
+      class="flex flex-wrap items-center justify-between border-b py-4 gap-4 md:gap-0"
+    >
+      <!-- Imagen y nombre del producto -->
+      <div class="flex items-center space-x-4 w-full md:w-auto">
+        <img
+          [src]="apiUrl + 'api/Productos/foto/' + item.Codigo + '-1.jpg'"
+          alt="{{ item.Nombre }}"
+          class="w-16 h-16 rounded object-cover"
+          (error)="onImageError($event)"
+        />
+        <div class="flex-1">
+          <strong class="block text-sm truncate w-48 md:w-64">{{ item.NoMbreFull }}</strong>
+          <p
+            [ngClass]="{
+              'text-green-500': item.Disponibilidad === 'DISPONIBLE',
+              'text-orange-500': item.Disponibilidad === 'SOBRE_PEDIDO',
+              'text-yellow-500': item.Disponibilidad === 'CONSULTAR_ASESOR'
+            }"
+            class="text-xs"
           >
-            -
-          </button>
-
-          <!-- Input de cantidad -->
-          <input
-            type="number"
-            [(ngModel)]="item.Cantidad"
-            class="w-16 text-center border rounded"
-            (change)="updateQuantity(item)"
-          />
-
-          <!-- Botón de más -->
-          <button
-            class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
-            (click)="increaseQuantity(item)"
-          >
-            +
-          </button>
+            {{ item.Disponibilidad }}
+          </p>
         </div>
+      </div>
 
-        <!-- Precio total del producto -->
-        <div class="text-sm font-semibold text-gray-700">
-          {{ calculateTotalPrice(item) | currency:'USD' }}
-        </div>
-      </li>
+      <!-- Controles de cantidad -->
+      <div class="flex items-center space-x-2 w-full md:w-auto">
+        <button
+          class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+          (click)="decreaseQuantity(item)"
+        >
+          -
+        </button>
+        <input
+          type="number"
+          [(ngModel)]="item.Cantidad"
+          class="w-16 text-center border rounded"
+          (change)="updateQuantity(item)"
+        />
+        <button
+          class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+          (click)="increaseQuantity(item)"
+        >
+          +
+        </button>
+      </div>
+
+      <!-- Precio total del producto -->
+      <div class="text-sm font-semibold text-gray-700 w-full md:w-auto text-right">
+        {{ calculateTotalPrice(item) | currency:'USD' }}
+      </div>
+    </li>
+
     </ul>
+    <div class="flex flex-row justify-around flex-row-reverse">
 
-    <!-- Precio total del carrito -->
-    <div class="mt-4 text-right text-lg font-bold">
-      Total: {{ calculateCartTotal() | currency:'USD' }}
+       <!-- Precio total del carrito -->
+       <div class="mt-4 text-right text-lg font-bold">
+        Total: {{ calculateCartTotal() | currency:'USD' }}
+      </div>
+
+
+      <div class="mt-4 text-right text-lg font-bold">
+        <button *ngIf="cartItems.length > 0"  class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600" (click)="cerrarcotizacion()">
+          Cerrar cotizacion
+        </button>
+      </div>
+
+
+
     </div>
-  </div>
+    </div>
 
   <!-- Mensaje si el carrito está vacío -->
   <ng-template #emptyCart>

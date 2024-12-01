@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import {  CartService } from 'src/app/services/cart.service';
 import { API_URL } from 'src/app/services/utils/Constants';
+import Swal from 'sweetalert2';
 
 
 interface CartItem {
@@ -139,6 +140,31 @@ export class PerfilComponent implements OnInit {
       item.Cantidad = 1; // Evitar valores menores a 1
     }
     this.cartService.updateItem(item);
+  }
+
+  cerrarcotizacion(): void{
+    console.log("se inicia cierre");
+    this.cartService.cerrarcotizacion().subscribe({
+      next: (response) => {
+        console.log('Cierre realizado con éxito', response);
+        this.loadCart();
+        Swal.fire({
+          icon: 'success',
+          title: 'Cotizacion Cerrada',
+          text: 'Lacotizacion se ah completado puede verificar en sus cotizaciones',
+          showConfirmButton: false,
+          timer: 2000 // Alerta se cierra automáticamente después de 2 segundos
+        });
+
+      },
+      error: (error) => {
+        console.error('Error al cerrar cotización', error);
+        // Maneja el error aquí
+      },
+      complete: () => {
+        console.log('Se finaliza cierre');
+      },
+    });
   }
 
 }
