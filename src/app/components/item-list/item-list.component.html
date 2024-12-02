@@ -65,15 +65,33 @@
       <li *ngFor="let item of marca.value">
         <div class="bg-white shadow-md rounded-lg overflow-hidden p-4 relative h-100" (click)="selectItem(item)">
           <div class="relative z-10">
-            <img [src]="apiUrl + 'api/Productos/foto/' + item.Codigo + '-1.jpg'" alt="Imagen" (error)="onImageError($event)">
-            <h3 class="text-lg font-bold text-[#0d2744] flex items-center truncate" title="{{item.Nombre}}">
-               {{item.Nombre}} - <h2 class="font-bold"> {{marca.key}}</h2>
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+              <!-- Imagen del producto -->
+              <img
+                [src]="apiUrl + 'api/Productos/foto/' + item.Codigo + '-1.jpg'"
+                alt="Imagen"
+                (error)="onImageError($event)"
+                class="w-full h-32 object-cover rounded-t-lg"
+              />
+              <!-- Logo de la marca -->
+              <div class="flex justify-center p-2 bg-gray-50">
+                <img
+                  [src]="getLogoUrl(item.Marca)"
+                  alt="{{ item.Marca }}"
+                  class="h-10 object-contain"
+                />
+              </div>
+            </div>
+
+            <h3 class="line-clamp" title="{{ item.Nombre }}">
+              <strong> {{ item.Nombre }} </strong>
             </h3>
             <p class="text-sm text-[#143e66] dark:text-[#bfddf8] mt-2">
               <strong> {{item.PrecioVenta | currency:'$':'symbol':'1.2-2' }}</strong> <br>
               Serie: {{item.Serie}} <br>
               Referencia: {{item.Referencia}} <br>
-              Codigo: {{item.Codigo}}
+              Codigo: {{item.Codigo}} <br>
+             <strong> <a href="javascript:void(0)" (click)="infoprod(item.DataSheet)">Ver Ficha Técnica</a> </strong>
             </p>
             <p class="text-sm text-[#143e66] dark:text-[#bfddf8] mt-2" [ngClass]="{'text-verde': item.Disponibilidad === 'DISPONIBLE', 'text-rojo': item.Disponibilidad === 'CONSULTAR_ASESOR'}">
               Disponibilidad : <strong> {{item.Disponibilidad}} </strong>

@@ -30,8 +30,18 @@ export class ItemListComponent {
   selectedItem: any = null;
   userCodTercero: string | null = null;
 
+  logos:{ [key: string]: string } = {
+    'HIKVISION': 'assets/marcas/Hikvision.png',
+    'EZVIZ': 'assets/marcas/EZVIZ.png',
+    'HILOOK': 'assets/marcas/HILOOK.png',
+    // Agrega más marcas y logos según sea necesario
+  };
 
   constructor(private itemService: ItemService, private cartService : CartService) { }
+
+  getLogoUrl(marca: string): string {
+    return this.logos[marca] || 'assets/logos/default.png'; // Logo por defecto
+  }
 
   onSearch(): void {
     this.searchExecuted = true;
@@ -169,5 +179,33 @@ export class ItemListComponent {
     });
   }
 
+
+  infoprod(pdfUrl : string): void{
+    if (!pdfUrl) {
+      Swal.fire({
+        icon: 'error',
+        title: 'No disponible',
+        text: 'No hay un DataSheet disponible para este producto.',
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: 'Ficha Técnica',
+      html: `
+        <object data="${pdfUrl}" type="application/pdf" width="100%" height="500px">
+          <p>Tu navegador no soporta la visualización de PDF.
+             <a href="${pdfUrl}" target="_blank">Haz clic aquí para ver el PDF</a>
+          </p>
+        </object>
+      `,
+      showCloseButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Cerrar',
+      width: '80%', // Puedes ajustar el tamaño del modal
+      padding: '20px',
+      background: '#fff',
+    });
+  }
 
 }

@@ -18,6 +18,7 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   onLogin(): void {
+    
     this.authService.login(this.cedula, this.password).subscribe(
       (response) => {
 

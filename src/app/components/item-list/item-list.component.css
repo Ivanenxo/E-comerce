@@ -13,3 +13,47 @@
 .bg-rojo {
   background-color: red;
 }
+
+/* Efecto de sombra sutil para la imagen del producto */
+img.object-cover {
+  transition: transform 0.3s ease;
+}
+
+img.object-cover:hover {
+  transform: scale(1.05); /* Da un efecto de zoom sutil cuando se pasa el mouse */
+}
+
+/* Efecto de sombra en el logo */
+img.object-contain {
+  transition: transform 0.3s ease;
+}
+
+img.object-contain:hover {
+  transform: scale(1.1); /* Da un efecto de zoom al logo al pasar el mouse */
+}
+
+.line-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Máximo 2 líneas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card {
+  width: 300px; /* Define un ancho fijo para las tarjetas */
+  height: 400px; /* Define un alto fijo para mantener uniformidad */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card img {
+  object-fit: cover;
+  height: 120px; /* Ajusta la altura de las imágenes del producto */
+}
+
+.card .brand-logo {
+  max-height: 40px; /* Asegura que el logo tenga un tamaño proporcional */
+  object-fit: contain;
+}
