@@ -4,7 +4,7 @@ import { AuthService } from '../services/auth.service';
 import {  CartService } from 'src/app/services/cart.service';
 import { API_URL } from 'src/app/services/utils/Constants';
 import Swal from 'sweetalert2';
-
+import { ItemService } from '../services/item.service';
 
 interface CartItem {
   Id: number;
@@ -30,12 +30,17 @@ export class PerfilComponent implements OnInit {
     (event.target as HTMLImageElement).src = 'assets/Notfound.png';
   }
 
-
+  selectedItem: any = null;
 
   user: any = null; // Inicializa la variable del usuario como null
 
-  constructor(private authService: AuthService, private router: Router, private cartService: CartService) { }
+  constructor(private authService: AuthService, private router: Router, private cartService: CartService, private selectedItemService: ItemService) { }
 
+
+  selectItem(item: any) {
+    this.router.navigate(['/buscar'])
+    this.selectedItemService.setSelectedItem(item);
+  }
 
   ngOnInit(): void {
     // Verifica si el usuario está autenticado
@@ -54,6 +59,7 @@ export class PerfilComponent implements OnInit {
   }
 
   goToTienda():void{
+    this.selectedItemService.setSelectedItem(null);
     this.router.navigate(['/buscar'])
   }
 

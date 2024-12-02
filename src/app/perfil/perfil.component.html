@@ -35,7 +35,8 @@
           (error)="onImageError($event)"
         />
         <div class="flex-1">
-          <strong class="block text-sm truncate w-48 md:w-60">{{ item.NombreFull }}</strong>
+          <strong class="block text-sm truncate w-48 md:w-60" title="{{item.NombreFull}}" (click)="selectItem(item)">{{ item.NombreFull }}</strong>
+          <p>{{item.Referencia}}</p>
           <p
             [ngClass]="{
               'text-green-500': item.Disponibilidad === 'DISPONIBLE',

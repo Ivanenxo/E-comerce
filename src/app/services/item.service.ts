@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { delay, finalize, Observable, tap } from 'rxjs';
+import { BehaviorSubject, delay, finalize, Observable, tap } from 'rxjs';
 import { AuthService } from './auth.service';
 import { API_URL } from './utils/Constants';
 
@@ -11,7 +11,14 @@ export class ItemService {
 
   private apiUrl = API_URL+ 'api/Catalogo/GetByKeyWords';
 
+  private selectedItemSource = new BehaviorSubject<any>(null);
+  selectedItem$ = this.selectedItemSource.asObservable();
+
   constructor(private http: HttpClient, private authService: AuthService) { }
+
+  setSelectedItem(item: any) {
+    this.selectedItemSource.next(item);
+  }
 
   getItems(param2: string): Observable<any> {
     const token = localStorage.getItem('token');

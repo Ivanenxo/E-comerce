@@ -26,7 +26,7 @@
     <p class="text-sm text-gray-500 mt-2"><strong>Serie:</strong> {{ selectedItem.Serie }}</p>
     <p class="text-sm text-gray-500 mt-2"><strong>Referencia:</strong> {{ selectedItem.Referencia }}</p>
     <p class="text-sm text-gray-500 mt-2"><strong>Disponibilidad:</strong> {{ selectedItem.Disponibilidad }}</p>
-
+    <strong> <a href="javascript:void(0)" (click)="infoprod(selectedItem.DataSheet)">Ver Ficha Técnica</a> </strong>
     <button
       class="w-full p-2 mt-4 text-white bg-green-500 rounded hover:bg-green-600 focus:outline-none"
       (click)="addToCart(selectedItem.Codigo)"

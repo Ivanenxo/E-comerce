@@ -39,6 +39,13 @@ export class ItemListComponent {
 
   constructor(private itemService: ItemService, private cartService : CartService) { }
 
+  ngOnInit(): void {
+    // Subscríbete al observable para recibir los cambios
+    this.itemService.selectedItem$.subscribe((item) => {
+      this.selectedItem = item;
+    });
+  }
+
   getLogoUrl(marca: string): string {
     return this.logos[marca] || 'assets/logos/default.png'; // Logo por defecto
   }
