@@ -151,7 +151,7 @@ export class PerfilComponent implements OnInit {
         Swal.fire({
           icon: 'success',
           title: 'Cotizacion Cerrada',
-          text: 'Lacotizacion se ah completado puede verificar en sus cotizaciones',
+          text: 'La cotizacion se ah completado puede verificar en sus cotizaciones',
           showConfirmButton: false,
           timer: 2000 // Alerta se cierra automáticamente después de 2 segundos
         });

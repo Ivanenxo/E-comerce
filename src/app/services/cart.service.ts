@@ -68,7 +68,7 @@ export class CartService {
 
   cerrarcotizacion(): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.post(`${this.apiUrl}CerrarPedido/CerrarPedido`, null, { headers });
+    return this.http.post(`${this.apiUrl}CerrarPedido/CerrarPedido`, null, { headers, responseType: 'text' });
   }
 
 }
