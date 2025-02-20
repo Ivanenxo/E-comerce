@@ -24,6 +24,7 @@ export class PerfilComponent implements OnInit {
   apiUrl: string = API_URL;
   cartItems: any[] = [];
   cartVisible = false;
+  selectedItems: { [key: string]: boolean } = {};
 
   onImageError(event: Event) {
     // Cambia el src de la imagen a una imagen alternativa en caso de error
@@ -43,6 +44,9 @@ export class PerfilComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+
+
     // Verifica si el usuario está autenticado
     if (this.authService.isLoggedIn()) {
       this.user = this.authService.getUserInfo(); // Obtiene la información del usuario
@@ -85,6 +89,9 @@ export class PerfilComponent implements OnInit {
   }
 
   toggleCart(): void {
+    this.cartItems.forEach(item => {
+      this.selectedItems[item.Codigo] = true;
+    });
     this.cartVisible = !this.cartVisible;
     this.loadCart();
   }
@@ -102,6 +109,29 @@ export class PerfilComponent implements OnInit {
     return this.cartItems.reduce((total, item) => total + (item.Cantidad * item.PrecioVenta), 0);
   }
 
+  deleteQuantity(item: any):void{
+    const updatePayLoad ={
+      CodTercero: localStorage.getItem('cedula'),
+      CodProducto: item.Codigo,
+      Cantidad: item.Cantidad - item.Cantidad,
+    };
+    this.cartService.updateItem(updatePayLoad).subscribe({
+      next:() =>{
+        item.Cantidad;
+        this.loadCart();
+      },
+      error: (error) =>{
+        console.error('Error al decrecer')
+      }
+    })
+  }
+
+  onItemSelected(item: any): void {
+
+    console.log("Seleccionado:", item.Codigo, this.selectedItems[item.Codigo, item.Cantidad]);
+
+    console.log("Items seleccionaods:", this.selectedItems)
+  }
 
   decreaseQuantity(item: any): void {
 
@@ -142,15 +172,44 @@ export class PerfilComponent implements OnInit {
   }
 
   updateQuantity(item: any): void {
+
+    const updatePayLoad ={
+      CodTercero: localStorage.getItem('cedula'),
+      CodProducto: item.Codigo,
+      Cantidad: item.Cantidad,
+    };
     if (item.Cantidad < 1) {
       item.Cantidad = 1; // Evitar valores menores a 1
     }
-    this.cartService.updateItem(item);
+    this.cartService.updateItem(updatePayLoad).subscribe({
+      next:() =>{
+        item.Cantidad;
+        console.log(item.Cantidad);
+      }
+    });
   }
 
   cerrarcotizacion(): void{
     console.log("se inicia cierre");
-    this.cartService.cerrarcotizacion().subscribe({
+
+    const productosSeleccionados = this.cartItems
+    .filter(item => this.selectedItems[item.Codigo]) // Solo los marcados
+    .map(item => ({
+      Codigo: item.Codigo,
+      Cantidad: item.Cantidad
+    }));
+
+    console.log(productosSeleccionados)
+  if (productosSeleccionados.length === 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Ningún producto seleccionado',
+      text: 'Debe seleccionar al menos un producto para cerrar la cotización.',
+    });
+    return;
+  }
+
+    this.cartService.cerrarcotizacion(productosSeleccionados).subscribe({
       next: (response) => {
         console.log('Cierre realizado con éxito', response);
         this.loadCart();

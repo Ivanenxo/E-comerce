@@ -50,7 +50,7 @@ export class OrdenesComponent {
     },
   ];
 
-  filter: string = 'todas';
+  filter: string = 'cotizado';
 
   get filteredOrders() {
     if (this.filter === 'todas') {

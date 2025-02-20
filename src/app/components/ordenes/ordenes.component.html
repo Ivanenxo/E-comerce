@@ -4,44 +4,44 @@
   <!-- Filtros -->
   <div class="flex flex-wrap gap-2 mb-6">
     <button
-      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      [class.bg-gray-300]="filter === 'todas'"
-      (click)="setFilter('todas')"
+    class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+    [class.bg-gray-200]="filter === 'cotizado'"
+    (click)="setFilter('cotizado')"
     >
-      Todas las órdenes
-    </button>
-    <button
-      class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-      [class.bg-gray-200]="filter === 'cotizado'"
-      (click)="setFilter('cotizado')"
-    >
-      Cotizado
-    </button>
-    <button
-      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      [class.bg-gray-300]="filter === 'pendiente'"
-      (click)="setFilter('pendiente')"
-    >
-      Pendiente por entregar
-    </button>
-    <button
-      class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-      [class.bg-gray-300]="filter === 'enviado'"
-      (click)="setFilter('enviado')"
-    >
-      Enviado
-    </button>
-    <button
-      class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-      [class.bg-gray-200]="filter === 'cerrada'"
-      (click)="setFilter('cerrada')"
-    >
-      Orden cerrada
-    </button>
-  </div>
+    Pendientes de pago
+  </button>
+  <button
+  class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+  [class.bg-gray-300]="filter === 'pendiente'"
+  (click)="setFilter('pendiente')"
+  >
+  Pendientes de envio
+</button>
+<button
+class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+[class.bg-gray-300]="filter === 'enviado'"
+(click)="setFilter('enviado')"
+>
+Enviado
+</button>
+<button
+class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+[class.bg-gray-200]="filter === 'cerrada'"
+(click)="setFilter('cerrada')"
+>
+Ordenes cerradas
+</button>
+<button
+  class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+  [class.bg-gray-300]="filter === 'todas'"
+  (click)="setFilter('todas')"
+>
+  Todas las órdenes
+</button>
+</div>
 
-   <!-- Tabla de órdenes -->
-   <div class="overflow-x-auto bg-white shadow-md rounded">
+<!-- Tabla de órdenes -->
+<div class="overflow-x-auto bg-white shadow-md rounded">
     <table class="table-auto w-full border-collapse border border-gray-300">
       <thead class="bg-gray-200">
         <tr>

@@ -17,7 +17,7 @@ export class CartService {
   private cartUpdatedSource = new Subject<void>();
   cartUpdated$ = this.cartUpdatedSource.asObservable();
 
-  private apiUrl = API_URL+'api/carrito/';
+  private apiUrl = API_URL+'api/Carrito/';
 
   constructor(private http:HttpClient) { }
 
@@ -66,9 +66,9 @@ export class CartService {
     return this.http.post(`${this.apiUrl}UpdateItem/UpdateItem`, item, { headers, responseType: 'text' });
   }
 
-  cerrarcotizacion(): Observable<any> {
+  cerrarcotizacion(productosSeleccionados: any): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.post(`${this.apiUrl}CerrarPedido/CerrarPedido`, null, { headers, responseType: 'text' });
+    return this.http.post(`${this.apiUrl}CrearOrden`, productosSeleccionados, { headers, responseType: 'text' });
   }
 
 }
