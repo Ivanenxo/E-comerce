@@ -6,6 +6,7 @@ import { API_URL } from 'src/app/services/utils/Constants';
 import Swal from 'sweetalert2';
 import { ItemService } from '../services/item.service';
 
+
 interface CartItem {
   Id: number;
   CodTercero: string;
@@ -191,6 +192,7 @@ export class PerfilComponent implements OnInit {
 
   cerrarcotizacion(): void{
     console.log("se inicia cierre");
+    var doc:string;
 
     const productosSeleccionados = this.cartItems
     .filter(item => this.selectedItems[item.Codigo]) // Solo los marcados
@@ -211,15 +213,17 @@ export class PerfilComponent implements OnInit {
 
     this.cartService.cerrarcotizacion(productosSeleccionados).subscribe({
       next: (response) => {
-        console.log('Cierre realizado con éxito', response);
+        const doc= response.Documento?.IdDoc
+        console.log('Cierre realizado con éxito', response.Documento?.IdDoc);
         this.loadCart();
-        Swal.fire({
-          icon: 'success',
-          title: 'Cotizacion Cerrada',
-          text: 'La cotizacion se ah completado puede verificar en sus cotizaciones',
-          showConfirmButton: false,
-          timer: 2000 // Alerta se cierra automáticamente después de 2 segundos
-        });
+        this.crearPreferenciaPago(doc);
+        // Swal.fire({
+        //   icon: 'success',
+        //   title: 'Cotizacion Cerrada',
+        //   text: 'La cotizacion se ah completado puede verificar en sus cotizaciones',
+        //   showConfirmButton: false,
+        //   timer: 2000 // Alerta se cierra automáticamente después de 2 segundos
+        // });
 
       },
       error: (error) => {
@@ -234,6 +238,56 @@ export class PerfilComponent implements OnInit {
       complete: () => {
         console.log('Se finaliza cierre');
       },
+    });
+
+    //this.cartService.crearPreferencia
+
+
+  }
+
+  crearPreferenciaPago(doc: string): void {
+    this.cartService.crearPreferencia(doc).subscribe({
+      next: (response) => {
+        const preferenceId = response; // Recibe el ID de la preferencia desde el backend
+        console.log("Preferencia creada con éxito", preferenceId);
+
+        // Mostrar SweetAlert con opciones
+        Swal.fire({
+          icon: 'success',
+          title: 'Cotización cerrada',
+          text: '¿Desea pagar ahora o seguir comprando?',
+          showCancelButton: true,
+          confirmButtonText: 'Pagar ahora',
+          cancelButtonText: 'Seguir comprando',
+          customClass: {
+            confirmButton: 'bg-green-500 text-white px-4 py-2 rounded',
+            cancelButton: 'bg-red-500 text-white px-4 py-2 rounded'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.abrirMercadoPago(preferenceId);
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error al crear la preferencia de pago', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un problema al generar la orden de pago. Por favor, intenta nuevamente.',
+        });
+      }
+    });
+  }
+
+  abrirMercadoPago(preferenceId: string): void {
+    const mp = new (window as any).MercadoPago('TEST-153b9f18-bfae-441f-bfef-140de9e9ddcc');
+
+    mp.checkout({
+      preference: {
+        id: preferenceId
+      },
+      autoOpen: true, // Abrir automáticamente
     });
   }
 

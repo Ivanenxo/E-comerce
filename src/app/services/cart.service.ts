@@ -18,6 +18,7 @@ export class CartService {
   cartUpdated$ = this.cartUpdatedSource.asObservable();
 
   private apiUrl = API_URL+'api/Carrito/';
+  private apiUrlMP = API_URL+'api/MercadoPago/'
 
   constructor(private http:HttpClient) { }
 
@@ -50,25 +51,31 @@ export class CartService {
 
   addItem(item: CartItem): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.post(`${this.apiUrl}AddItem/AddItem`, item, { headers,
+    return this.http.post(`${this.apiUrl}AddItem`, item, { headers,
       responseType: 'text' });
   }
 
 
   descontarItem(item: CartItem): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.post(`${this.apiUrl}DescontarItem/DescontarItem`, item, { headers });
+    return this.http.post(`${this.apiUrl}DescontarItem`, item, { headers });
   }
 
 
   updateItem(item: CartItem): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.post(`${this.apiUrl}UpdateItem/UpdateItem`, item, { headers, responseType: 'text' });
+    return this.http.post(`${this.apiUrl}UpdateItem`, item, { headers, responseType: 'text' });
   }
 
   cerrarcotizacion(productosSeleccionados: any): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.post(`${this.apiUrl}CrearOrden`, productosSeleccionados, { headers, responseType: 'text' });
+    return this.http.post(`${this.apiUrl}CrearOrden`, productosSeleccionados, { headers, responseType: 'json' });
   }
 
+  crearPreferencia(documento: string): Observable<any> {
+    const headers = this.getHeaders();
+    const url = `${this.apiUrlMP}CrearPreferencia?DocumentoID=${documento}`;
+
+    return this.http.post(url, null, { headers, responseType: 'text' }); // Enviar null como body
+  }
 }
