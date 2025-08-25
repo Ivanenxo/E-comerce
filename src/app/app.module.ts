@@ -11,6 +11,7 @@ import { LoginComponent } from './login/login.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { AuthService } from './services/auth.service';
 import { OrdenesComponent } from './components/ordenes/ordenes.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { OrdenesComponent } from './components/ordenes/ordenes.component';
     ItemListComponent,
     LoginComponent,
     PerfilComponent,
-    OrdenesComponent
+    OrdenesComponent,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,

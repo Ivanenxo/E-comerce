@@ -8,7 +8,7 @@ import { API_URL } from './utils/Constants';
 })
 export class AuthService {
 
-  private apiUrl = API_URL+ 'api/Login/Autenticate';
+  private apiUrl = API_URL+ 'api/Login';
 
   constructor(private http : HttpClient) { }
   login(cedula: string, password: string): Observable<any> {
@@ -17,7 +17,7 @@ export class AuthService {
       Password : password
     };
     console.log(body);
-    return this.http.post<any>(this.apiUrl, body);
+    return this.http.post<any>(`${this.apiUrl}/Autenticate`, body);
 
   }
 
@@ -42,4 +42,19 @@ export class AuthService {
   getCedula(): string | null {
     return localStorage.getItem('cedula');
   }
+
+  sendForgotPasswordPin(documento: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/SendForgotPasswordPin`, `"${documento}"`, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // Cambiar contraseña con PIN
+  changePassword(pin: string, documento: string, password: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/ChangePassword?pin=${pin}&documento=${documento}&password=${password}`,
+      {}
+    );
+  }
+
 }
