@@ -32,7 +32,7 @@ export class LoginComponent {
           localStorage.setItem('username',userName);
           localStorage.setItem('rol', response.Rol)
 
-          if(response.Rol == 'Cliente'){
+          if(response.Rol == 'CLIENTE'){
 
             const cliente = {
               Codigo: cedula,
@@ -50,7 +50,7 @@ export class LoginComponent {
             this.clienteService.setClienteSeleccionado(cliente);
 
             this.router.navigate(['/buscar']);
-          }else if(response.Rol == 'Empleado') {
+          }else if(response.Rol == 'VENDEDOR') {
             this.router.navigate(['/listClient']);
           }
 
