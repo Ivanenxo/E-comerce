@@ -53,7 +53,7 @@ export class ListClientComponent {
     const headers = this.getHeaders();
 
     return this.http.get<Cliente[]>(
-      `${this.apiUrl}GetItems`,
+      `${this.apiUrl}GetClientes`,
       { headers }
     );
   }
