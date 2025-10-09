@@ -48,7 +48,7 @@ export class CartService {
 
   getItems(): Observable<CartItem[]> {
     const headers = this.getHeaders();
-    return this.http.get<CartItem[]>(`${this.apiUrl}GetItems?${this.cliente.Codigo}`, { headers });
+    return this.http.get<CartItem[]>(`${this.apiUrl}GetItems?CodigoCliente=${this.cliente.Codigo}`, { headers });
   }
 
 
