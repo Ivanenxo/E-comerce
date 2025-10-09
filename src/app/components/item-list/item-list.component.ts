@@ -57,7 +57,7 @@ export class ItemListComponent {
       this.cliente = this.clienteService.getClienteSeleccionado();
     }
 
-    if (localStorage.getItem('rol') === 'Empleado' && !this.cliente) {
+    if (localStorage.getItem('rol') === 'VENDEDOR' && !this.cliente) {
       console.log("Verificando")
       this.router.navigate(['/listClient']);
       Swal.fire({
