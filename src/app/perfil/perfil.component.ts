@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import {  CartService } from 'src/app/services/cart.service';
+import { ClienteService } from '../services/cliente.service';
 import { API_URL } from 'src/app/services/utils/Constants';
 import Swal from 'sweetalert2';
 import { ItemService } from '../services/item.service';
@@ -36,7 +37,14 @@ export class PerfilComponent implements OnInit {
 
   user: any = null; // Inicializa la variable del usuario como null
 
-  constructor(private authService: AuthService, private router: Router, private cartService: CartService, private selectedItemService: ItemService) { }
+  cliente: any;
+
+  clientes: any[] = [];
+
+  filtroCliente: string = '';
+
+
+  constructor(private authService: AuthService, private router: Router, private cartService: CartService, private selectedItemService: ItemService, private clienteService: ClienteService ) { }
 
 
   selectItem(item: any) {
@@ -61,7 +69,40 @@ export class PerfilComponent implements OnInit {
     });
 
     this.loadCart();
+
+    this.clienteService.clienteSeleccionado$.subscribe(c => {
+      this.cliente = c;
+    });
+
+    if (!this.cliente) {
+      this.cliente = this.clienteService.getClienteSeleccionado();
+    }
+
+    this.clientes = this.clienteService.getClientes();
+
+    this.clienteService.clientes$.subscribe(cs =>{
+      this.clientes = cs;
+    });
+
+
+
+
   }
+
+
+  get clientesFiltrados() {
+    const filtro = this.filtroCliente.toLowerCase();
+    return this.clientes.filter(c =>
+      c.NombreComercial.toLowerCase().includes(filtro) ||
+      c.Ciudad.toLowerCase().includes(filtro)
+    );
+  }
+
+  seleccionarCliente(cliente: any) {
+    this.cliente = cliente;
+    this.clienteService.setClienteSeleccionado(cliente);
+  }
+
 
   goToTienda():void{
     this.selectedItemService.setSelectedItem(null);
@@ -112,7 +153,7 @@ export class PerfilComponent implements OnInit {
 
   deleteQuantity(item: any):void{
     const updatePayLoad ={
-      CodTercero: localStorage.getItem('cedula'),
+      CodTercero: this.cliente.Codigo,
       CodProducto: item.Codigo,
       Cantidad: item.Cantidad - item.Cantidad,
     };
@@ -137,7 +178,7 @@ export class PerfilComponent implements OnInit {
   decreaseQuantity(item: any): void {
 
       const updatePayLoad ={
-        CodTercero: localStorage.getItem('cedula'),
+        CodTercero: this.cliente.Codigo,
         CodProducto: item.Codigo,
         Cantidad: item.Cantidad - 1,
       };
@@ -157,7 +198,7 @@ export class PerfilComponent implements OnInit {
   increaseQuantity(item: any): void {
 
     const updatePayLoad ={
-      CodTercero: localStorage.getItem('cedula'),
+      CodTercero: this.cliente.Codigo,
       CodProducto: item.Codigo,
       Cantidad: item.Cantidad + 1,
     };
@@ -175,7 +216,7 @@ export class PerfilComponent implements OnInit {
   updateQuantity(item: any): void {
 
     const updatePayLoad ={
-      CodTercero: localStorage.getItem('cedula'),
+      CodTercero: this.cliente.Codigo,
       CodProducto: item.Codigo,
       Cantidad: item.Cantidad,
     };

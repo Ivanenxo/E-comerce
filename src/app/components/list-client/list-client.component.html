@@ -1,0 +1,53 @@
+<div class="p-6">
+  <h2 class="text-2xl font-semibold mb-4 text-gray-800">Clientes</h2>
+
+  <!-- Filtro por ciudad -->
+  <div class="mb-4 flex items-center gap-3">
+    <label class="text-gray-700 font-medium">Filtrar por ciudad:</label>
+    <select [(ngModel)]="ciudadFiltro" (change)="aplicarFiltro()" class="border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-blue-300">
+      <option value="">Todas</option>
+      <option *ngFor="let ciudad of ciudadesDisponibles" [value]="ciudad">{{ ciudad }}</option>
+    </select>
+  </div>
+
+  <!-- Tabla -->
+  <div class="overflow-x-auto shadow rounded-lg border border-gray-200">
+    <table class="min-w-full bg-white text-sm text-gray-700">
+      <thead class="bg-gray-100 text-gray-900 uppercase text-xs">
+        <tr>
+          <th class="py-3 px-4 text-left">Código</th>
+          <th class="py-3 px-4 text-left">Nombre Comercial</th>
+          <th class="py-3 px-4 text-left">Ciudad</th>
+          <th class="py-3 px-4 text-left">Teléfonos</th>
+          <th class="py-3 px-4 text-left">Email</th>
+          <th class="py-3 px-4 text-left">Vendedor</th>
+          <th class="py-3 px-4 text-left">Seleccionar/Editar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cliente of clientesFiltrados" class="border-t hover:bg-gray-50 transition">
+          <td class="py-2 px-4">{{ cliente.Codigo }}</td>
+          <td class="py-2 px-4">{{ cliente.NombreComercial }}</td>
+          <td class="py-2 px-4">{{ cliente.Ciudad }}</td>
+          <td class="py-2 px-4">{{ cliente.Telefonos }}</td>
+          <td class="py-2 px-4">{{ cliente.Email }}</td>
+          <td class="py-2 px-4">{{ cliente.Vendedor }}</td>
+          <td class="py-2 px-4 text-center">
+            <button (click)="seleccionarCliente(cliente)" class="text-blue-600 hover:text-blue-800 transition" title="Seleccionar cliente">
+              <!-- ícono de ojo -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+</div>

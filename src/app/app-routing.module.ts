@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { OrdenesComponent } from './components/ordenes/ordenes.component';
+import { ListClientComponent } from './components/list-client/list-client.component';
 import { AuthGuard } from './auth.guard';
 
 
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'forgotPassword', component : ForgotPasswordComponent},
   { path: 'buscar', component: ItemListComponent , canActivate: [AuthGuard] },
   { path: 'ordenes', component: OrdenesComponent},
+  { path: 'listClient', component: ListClientComponent},
   { path: '**', redirectTo: 'login' }
 ];
 

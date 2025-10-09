@@ -23,14 +23,16 @@ export class AuthService {
 
   logout(): void {
     localStorage.clear();
+    sessionStorage.clear();
   }
 
   getUserInfo(): any {
     const cedula = localStorage.getItem('cedula');
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
+    const rol = localStorage.getItem('rol')
     if (cedula && token) {
-      return { cedula, token, username};
+      return { cedula, token, username, rol};
     }
     return null;
   }

@@ -2,10 +2,12 @@ import { Component } from '@angular/core';
 import { delay } from 'rxjs';
 import { ItemService } from '../../services/item.service';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 import { API_URL } from 'src/app/services/utils/Constants';
 import { CartItem, CartService } from 'src/app/services/cart.service';
 import { ɵDomSanitizerImpl } from '@angular/platform-browser';
 import { PerfilComponent } from 'src/app/perfil/perfil.component';
+import { ClienteService } from 'src/app/services/cliente.service';
 
 @Component({
   selector: 'app-item-list',
@@ -19,6 +21,8 @@ export class ItemListComponent {
     // Cambia el src de la imagen a una imagen alternativa en caso de error
     (event.target as HTMLImageElement).src = 'assets/Notfound.png';
   }
+
+  cliente: any;
 
   items: any[] = [];
   groupedItems: { [marca: string]: any[] } = {};
@@ -37,13 +41,41 @@ export class ItemListComponent {
     // Agrega más marcas y logos según sea necesario
   };
 
-  constructor(private itemService: ItemService, private cartService : CartService) { }
+  constructor(private itemService: ItemService, private cartService : CartService, private clienteService: ClienteService, private router: Router) { }
 
   ngOnInit(): void {
     // Subscríbete al observable para recibir los cambios
     this.itemService.selectedItem$.subscribe((item) => {
       this.selectedItem = item;
     });
+
+    this.clienteService.clienteSeleccionado$.subscribe(c => {
+      this.cliente = c;
+    });
+
+    if (!this.cliente) {
+      this.cliente = this.clienteService.getClienteSeleccionado();
+    }
+
+    if (localStorage.getItem('rol') === 'Empleado' && !this.cliente) {
+      console.log("Verificando")
+      this.router.navigate(['/listClient']);
+      Swal.fire({
+        title: 'Selecciona un cliente',
+        text: 'Debes seleccionar un cliente antes de continuar.',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonText: 'Ir al listado de clientes',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#2563eb',
+        cancelButtonColor: '#6b7280',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/listClient']);
+        }
+      });
+    }
+
   }
 
   getLogoUrl(marca: string): string {
@@ -92,7 +124,7 @@ export class ItemListComponent {
       }
     });
 
-    this.itemService.getItems(param2).subscribe(
+    this.itemService.getItems(param2, this.cliente.Codigo).subscribe(
       (data) => {
         this.items = data;
         this.groupItemsByMarca();
@@ -155,7 +187,9 @@ export class ItemListComponent {
   perfilComponent!: PerfilComponent;
 
   addToCart(codProducto: string): void {
-    this.userCodTercero = localStorage.getItem('cedula');
+
+
+    this.userCodTercero = this.cliente.Codigo;
     const item: CartItem = {
       CodTercero: this.userCodTercero,
       CodProducto: codProducto,

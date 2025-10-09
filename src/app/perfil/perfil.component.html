@@ -2,6 +2,7 @@
 <div *ngIf="user" class="bg-gray-100 p-4 shadow-md flex items-center">
   <div>
     <h3 class="text-lg font-bold">Bienvenido: {{ user.username }}</h3>
+    <h3 class="text-lg font-bold">Rol: {{ user.rol }}</h3>
   </div>
   <button class="ml-4 text-blue-500 relative " (click)="goToTienda()">🏪 Tienda</button>
   <button class="ml-4 text-blue-500 relative " (click)="goToOrdenes()">🗒️ Mis ordenes</button>
@@ -14,6 +15,47 @@
       {{ cartItemCount }}
     </span>
   </button>
+
+  <div *ngIf="user.rol === 'Empleado'" class="ml-auto w-72">
+    <h3 class="text-base font-semibold mb-1 text-gray-800">Seleccionar Cliente</h3>
+
+    <!-- Campo de búsqueda -->
+    <input
+      type="text"
+      [(ngModel)]="filtroCliente"
+      placeholder="Buscar cliente..."
+      class="w-full border border-gray-300 rounded-md px-2 py-1 text-sm mb-1 focus:ring-1 focus:ring-blue-400 focus:outline-none"
+    />
+
+    <!-- Lista compacta con scroll (máximo 4 items visibles) -->
+    <div
+      class="max-h-12 overflow-y-auto border border-gray-300 rounded-md bg-white shadow-sm"
+      *ngIf="clientesFiltrados.length > 0"
+    >
+      <ul class="divide-y divide-gray-100">
+        <li
+          *ngFor="let c of clientesFiltrados"
+          (click)="seleccionarCliente(c)"
+          class="px-2 py-1 hover:bg-blue-100 cursor-pointer text-sm"
+        >
+          {{ c.NombreComercial }}
+          <span class="text-gray-500 text-xs">({{ c.Ciudad }})</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Sin resultados -->
+    <div *ngIf="clientesFiltrados.length === 0" class="text-gray-500 text-xs mt-1">
+      No se encontraron clientes.
+    </div>
+
+    <!-- Cliente seleccionado -->
+    <div *ngIf="cliente" class="mt-2 bg-blue-50 border border-blue-200 rounded-md p-2">
+      <p class="text-xs text-gray-600">Cliente seleccionado:</p>
+      <h3 class="text-sm font-medium text-blue-700 truncate">{{ cliente.NombreComercial }}</h3>
+    </div>
+  </div>
+
   <button class="ml-auto text-red-500 hover:underline" (click)="logout()">Cerrar sesión</button>
 </div>
 
