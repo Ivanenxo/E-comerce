@@ -1,5 +1,8 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ClienteService } from 'src/app/services/cliente.service';
+import { API_URL } from 'src/app/services/utils/Constants';
 
 interface Cliente {
   Codigo: string;
@@ -21,100 +24,56 @@ interface Cliente {
 })
 export class ListClientComponent {
 
-  constructor(private clienteService: ClienteService) {}
+  constructor(private clienteService: ClienteService,private http:HttpClient) {}
 
   ngOnInit(): void {
     this.aplicarFiltro();
+    this.cargarClientes();
   }
 
-  clientes: Cliente[] = [
-    {
-      Codigo: "0000-111",
-      NombreComercial: "ALFREDO LOPEZ",
-      Ciudad: "BARRANQUILLA",
-      TipoIdentificacion: "",
-      Identificacion: "",
-      NombreFiscal: "",
-      Telefonos: "",
-      Email: "",
-      EmailFE: "",
-      Vendedor: "V10"
-    },
-    {
-      Codigo: "0000-111",
-      NombreComercial: "ALFREDO LOPEZ",
-      Ciudad: "BARRANQUILLA",
-      TipoIdentificacion: "",
-      Identificacion: "",
-      NombreFiscal: "",
-      Telefonos: "",
-      Email: "",
-      EmailFE: "",
-      Vendedor: "V10"
-    },
-    {
-      Codigo: "0000-111",
-      NombreComercial: "ALFREDO LOPEZ",
-      Ciudad: "BARRANQUILLA",
-      TipoIdentificacion: "",
-      Identificacion: "",
-      NombreFiscal: "",
-      Telefonos: "",
-      Email: "",
-      EmailFE: "",
-      Vendedor: "V10"
-    },
-    {
-      Codigo: "0000-111",
-      NombreComercial: "ALFREDO LOPEZ",
-      Ciudad: "BARRANQUILLA",
-      TipoIdentificacion: "",
-      Identificacion: "",
-      NombreFiscal: "",
-      Telefonos: "",
-      Email: "",
-      EmailFE: "",
-      Vendedor: "V10"
-    },
-    {
-      Codigo: "0000-111",
-      NombreComercial: "ALFREDO LOPEZ",
-      Ciudad: "BARRANQUILLA",
-      TipoIdentificacion: "",
-      Identificacion: "",
-      NombreFiscal: "",
-      Telefonos: "",
-      Email: "",
-      EmailFE: "",
-      Vendedor: "V10"
-    },
-    {
-      Codigo: "0000-111",
-      NombreComercial: "ALFREDO LOPEZ",
-      Ciudad: "BARRANQUILLA",
-      TipoIdentificacion: "",
-      Identificacion: "",
-      NombreFiscal: "",
-      Telefonos: "",
-      Email: "",
-      EmailFE: "",
-      Vendedor: "V10"
-    },
-    {
-      Codigo: "0000-112",
-      NombreComercial: "EMPRESA XYZ",
-      Ciudad: "CARTAGENA",
-      TipoIdentificacion: "NIT",
-      Identificacion: "900123456",
-      NombreFiscal: "EMPRESA XYZ S.A.S.",
-      Telefonos: "3001234567",
-      Email: "contacto@xyz.com",
-      EmailFE: "facturacion@xyz.com",
-      Vendedor: "V05"
+  private apiUrl = API_URL+'api/Carrito/';
+
+
+  private getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  private getHeaders(): HttpHeaders {
+    const token = this.getToken();
+    if (!token) {
+      throw new Error('Token no disponible');
     }
-  ];
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+
+  getListClient(): Observable<Cliente[]> {
+    const headers = this.getHeaders();
+
+    return this.http.get<Cliente[]>(
+      `${this.apiUrl}GetItems`,
+      { headers }
+    );
+  }
+
+  cargarClientes(): void {
+    this.getListClient().subscribe({
+      next: (data) => {
+        this.clientes = data;
+        this.clientesFiltrado = [...this.clientes];
+        this.clienteService.setClientes(this.clientes); // compartir lista
+      },
+      error: (err) => {
+        console.error('Error al obtener clientes:', err);
+      }
+    });
+  }
 
 
+
+  clientes: Cliente[] = [];
   ciudadFiltro: string = '';
   clienteSeleccionado?: Cliente;
   clientesFiltrado: Cliente[] = [];

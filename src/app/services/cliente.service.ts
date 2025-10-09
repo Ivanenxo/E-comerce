@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { API_URL } from './utils/Constants';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,8 @@ export class ClienteService {
 
   private clientesSource = new BehaviorSubject<any[]>([]);
   clientes$ = this.clientesSource.asObservable();
+
+  private apiUrl = API_URL+'api/Carrito/';
 
   setClientes(clientes: any[]) {
     this.clientesSource.next(clientes);
