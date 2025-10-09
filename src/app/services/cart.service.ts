@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ClienteService } from './cliente.service';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, switchMap } from 'rxjs';
 import { API_URL } from './utils/Constants';
 
 export interface CartItem {
@@ -21,9 +21,22 @@ export class CartService {
   private apiUrl = API_URL+'api/Carrito/';
   private apiUrlMP = API_URL+'api/MercadoPago/'
 
-  constructor(private http:HttpClient, private clienteService:ClienteService) { }
+   // 🔄 Cliente actual como observable reactivo
+   private clienteSeleccionado$ = new BehaviorSubject<any>(null);
 
-  cliente = this.clienteService.getClienteSeleccionado();
+
+  constructor(private http:HttpClient, private clienteService:ClienteService) { // Suscripción al cliente del servicio global
+    this.clienteService.clienteSeleccionado$.subscribe(cliente => {
+      this.clienteSeleccionado$.next(cliente);
+      console.log('🧠 Cliente actualizado en CartService:', cliente);
+    });
+
+    // Si hay cliente guardado en sessionStorage, restaurarlo
+    const clienteGuardado = this.clienteService.getClienteSeleccionado();
+    if (clienteGuardado) {
+      this.clienteSeleccionado$.next(clienteGuardado);
+    } }
+
 
   notifyCartUpdated(): void {
     this.cartUpdatedSource.next();
@@ -46,10 +59,26 @@ export class CartService {
     });
   }
 
-  getItems(): Observable<CartItem[]> {
-    const headers = this.getHeaders();
-    return this.http.get<CartItem[]>(`${this.apiUrl}GetItems?CodigoCliente=${this.cliente.Codigo}`, { headers });
-  }
+ // 🔄 Obtener ítems del carrito dependiendo del cliente seleccionado
+ getItems(): Observable<CartItem[]> {
+  return this.clienteSeleccionado$.pipe(
+    switchMap(cliente => {
+      if (!cliente || !cliente.Codigo) {
+        console.warn('⚠️ No hay cliente seleccionado. Carrito vacío.');
+        return new Observable<CartItem[]>(observer => {
+          observer.next([]);
+          observer.complete();
+        });
+      }
+
+      const headers = this.getHeaders();
+      return this.http.get<CartItem[]>(
+        `${this.apiUrl}GetItems?CodigoCliente=${cliente.Codigo}`,
+        { headers }
+      );
+    })
+  );
+}
 
 
   addItem(item: CartItem): Observable<any> {
