@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ClienteService } from './cliente.service';
 import { Observable, Subject } from 'rxjs';
 import { API_URL } from './utils/Constants';
 
@@ -20,7 +21,9 @@ export class CartService {
   private apiUrl = API_URL+'api/Carrito/';
   private apiUrlMP = API_URL+'api/MercadoPago/'
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private clienteService:ClienteService) { }
+
+  cliente = this.clienteService.getClienteSeleccionado();
 
   notifyCartUpdated(): void {
     this.cartUpdatedSource.next();
@@ -45,7 +48,7 @@ export class CartService {
 
   getItems(): Observable<CartItem[]> {
     const headers = this.getHeaders();
-    return this.http.get<CartItem[]>(`${this.apiUrl}GetItems`, { headers });
+    return this.http.get<CartItem[]>(`${this.apiUrl}GetItems?${this.cliente.Codigo}`, { headers });
   }
 
 
