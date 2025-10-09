@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ClienteService } from 'src/app/services/cliente.service';
+import { Router } from '@angular/router';
 import { API_URL } from 'src/app/services/utils/Constants';
 
 interface Cliente {
@@ -24,7 +25,7 @@ interface Cliente {
 })
 export class ListClientComponent {
 
-  constructor(private clienteService: ClienteService,private http:HttpClient) {}
+  constructor(private clienteService: ClienteService,private http:HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.aplicarFiltro();
@@ -92,6 +93,7 @@ export class ListClientComponent {
   seleccionarCliente(cliente: Cliente) {
     this.clienteSeleccionado = cliente;
     this.clienteService.setClienteSeleccionado(cliente);
+    this.router.navigate(['/buscar']);
     console.log('Cliente seleccionado:', cliente);
   }
 
