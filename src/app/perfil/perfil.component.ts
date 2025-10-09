@@ -112,6 +112,9 @@ export class PerfilComponent implements OnInit {
   goToOrdenes(): void{
     this.router.navigate(['/ordenes']);
   }
+  goToClientes(): void{
+    this.router.navigate(['/listClient']);
+  }
 
 
   logout(): void {

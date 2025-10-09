@@ -6,7 +6,8 @@
   </div>
   <button class="ml-4 text-blue-500 relative " (click)="goToTienda()">🏪 Tienda</button>
   <button class="ml-4 text-blue-500 relative " (click)="goToOrdenes()">🗒️ Mis ordenes</button>
-  <button class="ml-4 text-blue-500 relative" (click)="toggleCart()">
+  <button class="ml-4 text-blue-500 relative " (click)="goToClientes()">💼 Mis Clientes</button>
+  <button *ngIf="user.rol === 'VENDEDOR'" class="ml-4 text-blue-500 relative" (click)="toggleCart()">
     🛒 Carrito
     <span
       *ngIf="cartItems.length > 0"
