@@ -255,7 +255,7 @@ export class PerfilComponent implements OnInit {
     return;
   }
 
-    this.cartService.cerrarcotizacion(productosSeleccionados).subscribe({
+    this.cartService.cerrarcotizacion(productosSeleccionados, this.cliente.Codigo).subscribe({
       next: (response) => {
         const doc= response.Documento?.IdDoc
         console.log('Cierre realizado con éxito', response.Documento?.IdDoc);

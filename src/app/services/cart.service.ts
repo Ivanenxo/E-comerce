@@ -99,9 +99,9 @@ export class CartService {
     return this.http.post(`${this.apiUrl}UpdateItem`, item, { headers, responseType: 'text' });
   }
 
-  cerrarcotizacion(productosSeleccionados: any): Observable<any> {
+  cerrarcotizacion(productosSeleccionados: any, CodigoCliente: string): Observable<any> {
     const headers = this.getHeaders();
-    return this.http.post(`${this.apiUrl}CrearOrden`, productosSeleccionados, { headers, responseType: 'json' });
+    return this.http.post(`${this.apiUrl}CrearOrden?CodigoCliente=${CodigoCliente}`, productosSeleccionados, { headers, responseType: 'json' });
   }
 
   crearPreferencia(documento: string): Observable<any> {
