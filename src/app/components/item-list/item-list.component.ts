@@ -126,6 +126,8 @@ export class ItemListComponent {
       this.fetchItems(this.param2);
       this.onFilterByMarca();
 
+      this.getFavorite(this.cliente.Codigo);
+
       const filtro = this.param2.toLowerCase();
       this.itemsFav = this.itemsFav.filter(item =>
         item.NombreFull?.toLowerCase().includes(filtro)
