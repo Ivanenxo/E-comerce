@@ -25,7 +25,7 @@ export class ItemService {
   getItems(param2: string, param3 : string): Observable<any> {
     const token = localStorage.getItem('token');
     if(token){
-      const url = `${this.apiUrl}/GetFavorites?CodigoCliente=${param3}`;
+      const url = `${this.apiUrl}/${param2}?CodigoCliente=${param3}`;
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
       return this.http.get<any>(url, {headers}).pipe(delay(2000),tap(() => console.log('Datos Cargados completamente')),
