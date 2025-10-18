@@ -125,6 +125,12 @@ export class ItemListComponent {
       this.selectedMarca = '';
       this.fetchItems(this.param2);
       this.onFilterByMarca();
+
+      const filtro = this.param2.toLowerCase();
+      this.itemsFav = this.itemsFav.filter(item =>
+        item.NombreFull?.toLowerCase().includes(filtro)
+      );
+
     } else {
       Swal.fire({
         icon: 'warning',
