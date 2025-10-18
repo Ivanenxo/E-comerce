@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { delay } from 'rxjs';
 import { ItemService } from '../../services/item.service';
 import Swal from 'sweetalert2';
@@ -25,6 +25,7 @@ export class ItemListComponent {
   cliente: any;
 
   items: any[] = [];
+  itemsFav: any[] = [];
   groupedItems: { [marca: string]: any[] } = {};
   displayedItems: { [marca: string]: any[] } = {};
   param2: string = '';
@@ -33,6 +34,11 @@ export class ItemListComponent {
   selectedMarca: string = '';
   selectedItem: any = null;
   userCodTercero: string | null = null;
+  currentIndex = 0;
+  intervalId: any;
+
+  @ViewChild('carouselContainer', { static: false }) carouselContainer!: ElementRef<HTMLDivElement>;
+
 
   logos:{ [key: string]: string } = {
     'HIKVISION': 'assets/marcas/Hikvision.png',
@@ -44,6 +50,8 @@ export class ItemListComponent {
   constructor(private itemService: ItemService, private cartService : CartService, private clienteService: ClienteService, private router: Router) { }
 
   ngOnInit(): void {
+
+
     // Subscríbete al observable para recibir los cambios
     this.itemService.selectedItem$.subscribe((item) => {
       this.selectedItem = item;
@@ -56,6 +64,8 @@ export class ItemListComponent {
     if (!this.cliente) {
       this.cliente = this.clienteService.getClienteSeleccionado();
     }
+
+    this.getFavorite(this.cliente.Codigo);
 
     if (localStorage.getItem('rol') === 'VENDEDOR' && !this.cliente) {
       console.log("Verificando")
@@ -76,6 +86,32 @@ export class ItemListComponent {
       });
     }
 
+  }
+
+  ngOnDestroy(): void {
+    this.stopAutoScroll();
+  }
+
+  startAutoScroll(): void {
+    this.stopAutoScroll(); // evita duplicados
+    this.intervalId = setInterval(() => {
+      const container = this.carouselContainer?.nativeElement;
+      if (!container || this.itemsFav.length === 0) return;
+
+      // Si llegó al final, vuelve al inicio
+      if (container.scrollLeft + container.offsetWidth >= container.scrollWidth) {
+        container.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        container.scrollBy({ left: 220, behavior: 'smooth' }); // Desplaza 220px
+      }
+    }, 2500); // cada 2.5 segundos
+  }
+
+  stopAutoScroll(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
   }
 
   getLogoUrl(marca: string): string {
@@ -248,5 +284,52 @@ export class ItemListComponent {
       background: '#fff',
     });
   }
+
+
+  getFavorite(Codigo : string): void {
+
+    console.log(this.cliente);
+
+    this.itemService.getItemsFav(Codigo).subscribe(
+      (data) => {
+        this.itemsFav = data;
+
+        console.log(this.itemsFav);
+        this.groupItemsByMarca();
+        this.onFilterByMarca();
+
+        // Generar lista de marcas únicas desde los items
+        this.marcas = [...new Set(this.items.map(item => item.Marca))];
+
+        Swal.close();
+
+        // Mostrar alerta si no hay resultados
+        if (this.itemsFav.length === 0) {
+          Swal.fire({
+            icon: 'info',
+            title: 'Sin resultados',
+            text: 'No se encontraron productos para el criterio de búsqueda.'
+          });
+        }
+      },
+      (error) => {
+        Swal.close();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al cargar los productos favoritos.'
+        });
+        console.error('Error al obtener items favoritos:', error);
+      }
+    );
+    this.startAutoScroll();
+  }
+
+
+
+
+
+
+
 
 }

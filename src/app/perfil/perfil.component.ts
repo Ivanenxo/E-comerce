@@ -43,6 +43,8 @@ export class PerfilComponent implements OnInit {
 
   filtroCliente: string = '';
 
+  mostrarLista = false;
+
 
   constructor(private authService: AuthService, private router: Router, private cartService: CartService, private selectedItemService: ItemService, private clienteService: ClienteService ) { }
 
@@ -89,6 +91,17 @@ export class PerfilComponent implements OnInit {
 
   }
 
+  onFocusInput() {
+    this.mostrarLista = true;
+  }
+
+  onBlurInput() {
+    // Pequeño retraso para permitir hacer clic en los elementos antes de cerrar
+    setTimeout(() => {
+      this.mostrarLista = false;
+    }, 200);
+  }
+
 
   get clientesFiltrados() {
     const filtro = this.filtroCliente.toLowerCase();
@@ -101,6 +114,8 @@ export class PerfilComponent implements OnInit {
   seleccionarCliente(cliente: any) {
     this.cliente = cliente;
     this.clienteService.setClienteSeleccionado(cliente);
+    this.mostrarLista = false;
+    this.router.navigate(['/buscar'])
   }
 
 

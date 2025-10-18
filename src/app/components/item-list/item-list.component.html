@@ -17,6 +17,40 @@
   </button>
 </div>
 
+<!-- Carrusel de productos favoritos -->
+<div *ngIf="(itemsFav?.length ?? 0) > 0" class="max-w-6xl mx-auto mt-8">
+  <h2 class="text-xl font-bold text-[#0d2744] mb-4">Productos recomendados</h2>
+
+  <div class="relative overflow-hidden">
+    <div
+      #carouselContainer
+      class="flex overflow-x-auto space-x-4 scrollbar-hide scroll-smooth"
+      (mouseenter)="stopAutoScroll()"
+      (mouseleave)="startAutoScroll()"
+    >
+      <div
+        *ngFor="let item of itemsFav"
+        class="min-w-[200px] bg-white shadow-md rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:shadow-lg transition"
+        (click)="selectItem(item)"
+      >
+        <img
+          [src]="apiUrl + 'api/Productos/foto/' + item.Codigo + '-1.jpg'"
+          alt="{{item.Nombre}}"
+          (error)="onImageError($event)"
+          class="w-full h-32 object-contain bg-gray-50"
+        />
+        <div class="p-3 text-center">
+          <p class="text-sm font-semibold text-gray-800">
+            {{ item.PrecioVenta | currency:'$':'symbol':'1.0-0' }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <div *ngIf="selectedItem; else itemList">
   <!-- Detalles del ítem seleccionado -->
   <div class="max-w-md mx-auto p-8 bg-white shadow-md rounded-lg">

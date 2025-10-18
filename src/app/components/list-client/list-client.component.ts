@@ -15,6 +15,7 @@ interface Cliente {
   Telefonos: string;
   Email: string;
   EmailFE: string;
+  TipoCliente: string;
   Vendedor: string;
 }
 
@@ -28,7 +29,7 @@ export class ListClientComponent {
   constructor(private clienteService: ClienteService,private http:HttpClient, private router: Router) {}
 
   ngOnInit(): void {
-    this.aplicarFiltro();
+    this.aplicarFiltros();
     this.cargarClientes();
   }
 
@@ -76,6 +77,8 @@ export class ListClientComponent {
 
   clientes: Cliente[] = [];
   ciudadFiltro: string = '';
+  tipoClienteFiltro: string = '';
+  vendedorFiltro: string = '';
   clienteSeleccionado?: Cliente;
   clientesFiltrado: Cliente[] = [];
 
@@ -83,10 +86,20 @@ export class ListClientComponent {
     return [...new Set(this.clientes.map(c => c.Ciudad))];
   }
 
+  get TiposClientesDisponibles(): string[] {
+    return [...new Set(this.clientes.map(c => c.TipoCliente))];
+  }
+
+  get vendedoresDisponibles(): string[] {
+    return [...new Set(this.clientes.map(c => c.Vendedor))];
+  }
+
   get clientesFiltrados(): Cliente[] {
-    if (!this.ciudadFiltro) return this.clientes;
+    if (!this.ciudadFiltro || !this.tipoClienteFiltro) return this.clientes;
     return this.clientes.filter(c => c.Ciudad === this.ciudadFiltro);
   }
+
+
 
 
 
@@ -97,15 +110,16 @@ export class ListClientComponent {
     console.log('Cliente seleccionado:', cliente);
   }
 
-  aplicarFiltro(): void {
-    if (this.ciudadFiltro) {
-      this.clientesFiltrado = this.clientes.filter(c => c.Ciudad === this.ciudadFiltro);
-    } else {
-      this.clientesFiltrado = [...this.clientes];
-    }
+  aplicarFiltros(): void {
+    this.clientesFiltrado = this.clientes.filter(c => {
+      const coincideCiudad = !this.ciudadFiltro || c.Ciudad === this.ciudadFiltro;
+      const coincideTipo = !this.tipoClienteFiltro || c.TipoCliente === this.tipoClienteFiltro;
+      const coincideVendedor = !this.vendedorFiltro || c.Vendedor === this.vendedorFiltro;
+      return coincideCiudad && coincideTipo && coincideVendedor;
+    });
 
+    // Actualiza la lista en el servicio (si otros componentes la usan)
     this.clienteService.setClientes(this.clientesFiltrado);
-
   }
 
 }
