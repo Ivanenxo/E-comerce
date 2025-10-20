@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgModule } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import Swal from 'sweetalert2';
 import { ClienteService } from '../services/cliente.service';
 import { Router } from '@angular/router';
 
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   cedula = '';
   password = '';
@@ -17,6 +18,13 @@ export class LoginComponent {
 
 
   constructor(private authService: AuthService, private router: Router, private clienteService: ClienteService) {}
+
+  ngOnInit(): void {
+    // Configurar el CustomStore que DevExtreme usará para cargar los datos
+
+    localStorage.clear();
+  }
+
 
   onLogin(): void {
 
@@ -61,6 +69,15 @@ export class LoginComponent {
       },
       (error) => {
         console.error('Error al iniciar sesión:', error);
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al iniciar sesión',
+          text: 'Credenciales incorrectas o usuario no encontrado. Verifica tus datos e inténtalo nuevamente.',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3085d6'
+        });
+
       }
     );
   }
