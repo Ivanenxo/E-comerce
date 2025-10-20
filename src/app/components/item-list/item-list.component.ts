@@ -65,7 +65,7 @@ export class ItemListComponent {
       this.cliente = this.clienteService.getClienteSeleccionado();
     }
 
-    this.getFavorite(this.cliente.Codigo);
+
 
     if (localStorage.getItem('rol') === 'VENDEDOR' && !this.cliente) {
       console.log("Verificando")
@@ -85,6 +85,8 @@ export class ItemListComponent {
         }
       });
     }
+
+    this.getFavorite(this.cliente.Codigo);
 
   }
 
