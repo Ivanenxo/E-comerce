@@ -1,22 +1,23 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ClienteService } from 'src/app/services/cliente.service';
+import CustomStore from 'devextreme/data/custom_store';
+import { DxDataGridComponent } from 'devextreme-angular';
 import { Router } from '@angular/router';
+import { ClienteService } from 'src/app/services/cliente.service';
 import { API_URL } from 'src/app/services/utils/Constants';
 
 interface Cliente {
   Codigo: string;
   NombreComercial: string;
   Ciudad: string;
-  TipoIdentificacion: string;
-  Identificacion: string;
-  NombreFiscal: string;
-  Telefonos: string;
-  Email: string;
-  EmailFE: string;
-  TipoCliente: string;
-  Vendedor: string;
+  TipoIdentificacion?: string;
+  Identificacion?: string;
+  NombreFiscal?: string;
+  Telefonos?: string;
+  Email?: string;
+  EmailFE?: string;
+  TipoCliente?: string;
+  Vendedor?: string;
 }
 
 @Component({
@@ -24,17 +25,30 @@ interface Cliente {
   templateUrl: './list-client.component.html',
   styleUrls: ['./list-client.component.css']
 })
-export class ListClientComponent {
+export class ListClientComponent implements OnInit {
+  @ViewChild('dataGrid', { static: false }) dataGrid!: DxDataGridComponent;
 
-  constructor(private clienteService: ClienteService,private http:HttpClient, private router: Router) {}
+  clientes: Cliente[] = []; // cache local
+  dataSource: any;          // CustomStore
+  ciudadFiltro = '';
+  tipoClienteFiltro = '';
+  vendedorFiltro = '';
+
+  private apiUrl = API_URL + 'api/Carrito/';
+
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private clienteService: ClienteService
+  ) {}
 
   ngOnInit(): void {
-    this.aplicarFiltros();
-    this.cargarClientes();
+    // Configurar el CustomStore que DevExtreme usará para cargar los datos
+    this.dataSource = new CustomStore({
+      key: 'Codigo',
+      load: (loadOptions: any) => this.loadClientes(loadOptions)
+    });
   }
-
-  private apiUrl = API_URL+'api/Carrito/';
-
 
   private getToken(): string | null {
     return localStorage.getItem('token');
@@ -51,75 +65,94 @@ export class ListClientComponent {
     });
   }
 
-  getListClient(): Observable<Cliente[]> {
-    const headers = this.getHeaders();
+  private async loadClientes(loadOptions: any): Promise<any> {
+    try {
+      const headers = this.getHeaders();
+      const url = `${this.apiUrl}GetClientes`;
+      const clientes = await this.http.get<Cliente[]>(url, { headers }).toPromise();
 
-    return this.http.get<Cliente[]>(
-      `${this.apiUrl}GetClientes`,
-      { headers }
-    );
-  }
+      this.clientes = clientes || [];
 
-  cargarClientes(): void {
-    this.getListClient().subscribe({
-      next: (data) => {
-        this.clientes = data;
-        this.clientesFiltrado = [...this.clientes];
-        this.clienteService.setClientes(this.clientes); // compartir lista
-      },
-      error: (err) => {
-        console.error('Error al obtener clientes:', err);
+      // 🔹 Guarda la lista en el servicio para que otros componentes puedan acceder
+      this.clienteService.setClientes(this.clientes);
+
+      // 🔹 Aplicar filtros externos si existen
+      let resultado = this.clientes;
+
+      if (this.ciudadFiltro) {
+        resultado = resultado.filter(c => c.Ciudad === this.ciudadFiltro);
       }
-    });
+      if (this.tipoClienteFiltro) {
+        resultado = resultado.filter(c => c.TipoCliente === this.tipoClienteFiltro);
+      }
+      if (this.vendedorFiltro) {
+        resultado = resultado.filter(c => c.Vendedor === this.vendedorFiltro);
+      }
+
+      return {
+        data: resultado,
+        totalCount: resultado.length
+      };
+    } catch (err) {
+      console.error('Error loadClientes:', err);
+      throw err;
+    }
   }
 
+  // Cuando el usuario hace clic en una fila del grid
+  onRowClick(e: any): void {
+    const cliente: Cliente = e.data;
+    this.seleccionarCliente(cliente);
+  }
 
+  seleccionarCliente(cliente: Cliente): void {
+    // 🔹 Guarda el cliente seleccionado en el servicio compartido
+    this.clienteService.setClienteSeleccionado(cliente);
 
-  clientes: Cliente[] = [];
-  ciudadFiltro: string = '';
-  tipoClienteFiltro: string = '';
-  vendedorFiltro: string = '';
-  clienteSeleccionado?: Cliente;
-  clientesFiltrado: Cliente[] = [];
+    console.log('Cliente seleccionado:', cliente);
+    this.router.navigate(['/buscar']); // redirige al componente de búsqueda
+  }
 
+  aplicarFiltrosExternos(): void {
+    if (this.dataGrid?.instance) {
+      this.dataGrid.instance.refresh(); // recarga desde CustomStore
+    }
+  }
+
+  onContentReady(e: any): void {
+    const data = this.dataGrid.instance.getDataSource().items();
+
+    if (Array.isArray(data)) {
+      this.clienteService.setClientes(data);
+      console.log(`📤 ${data.length} clientes filtrados enviados al servicio`);
+    } else {
+      this.clienteService.setClientes([]);
+      console.log('⚠️ Lista vacía (sin resultados)');
+    }
+  }
+
+  // 🔹 Getters seguros para llenar selects (sin errores de tipo)
   get ciudadesDisponibles(): string[] {
-    return [...new Set(this.clientes.map(c => c.Ciudad))];
+    return Array.from(new Set(
+      this.clientes
+        .map(c => c.Ciudad)
+        .filter((v): v is string => !!v)
+    ));
   }
 
-  get TiposClientesDisponibles(): string[] {
-    return [...new Set(this.clientes.map(c => c.TipoCliente))];
+  get tiposClientesDisponibles(): string[] {
+    return Array.from(new Set(
+      this.clientes
+        .map(c => c.TipoCliente)
+        .filter((t): t is string => !!t)
+    ));
   }
 
   get vendedoresDisponibles(): string[] {
-    return [...new Set(this.clientes.map(c => c.Vendedor))];
+    return Array.from(new Set(
+      this.clientes
+        .map(c => c.Vendedor)
+        .filter((v): v is string => !!v)
+    ));
   }
-
-  get clientesFiltrados(): Cliente[] {
-    if (!this.ciudadFiltro || !this.tipoClienteFiltro) return this.clientes;
-    return this.clientes.filter(c => c.Ciudad === this.ciudadFiltro);
-  }
-
-
-
-
-
-  seleccionarCliente(cliente: Cliente) {
-    this.clienteSeleccionado = cliente;
-    this.clienteService.setClienteSeleccionado(cliente);
-    this.router.navigate(['/buscar']);
-    console.log('Cliente seleccionado:', cliente);
-  }
-
-  aplicarFiltros(): void {
-    this.clientesFiltrado = this.clientes.filter(c => {
-      const coincideCiudad = !this.ciudadFiltro || c.Ciudad === this.ciudadFiltro;
-      const coincideTipo = !this.tipoClienteFiltro || c.TipoCliente === this.tipoClienteFiltro;
-      const coincideVendedor = !this.vendedorFiltro || c.Vendedor === this.vendedorFiltro;
-      return coincideCiudad && coincideTipo && coincideVendedor;
-    });
-
-    // Actualiza la lista en el servicio (si otros componentes la usan)
-    this.clienteService.setClientes(this.clientesFiltrado);
-  }
-
 }

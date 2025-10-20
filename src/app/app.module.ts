@@ -10,6 +10,7 @@ import { ItemListComponent } from './components/item-list/item-list.component';
 import { LoginComponent } from './login/login.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { AuthService } from './services/auth.service';
+import { DxDataGridModule } from 'devextreme-angular';
 import { OrdenesComponent } from './components/ordenes/ordenes.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ListClientComponent } from './components/list-client/list-client.component';
@@ -28,6 +29,7 @@ import { ListClientComponent } from './components/list-client/list-client.compon
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    DxDataGridModule,
     FormsModule
   ],
   providers: [AuthService],
