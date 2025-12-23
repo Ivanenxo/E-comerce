@@ -37,6 +37,16 @@ export class ItemListComponent {
   currentIndex = 0;
   intervalId: any;
 
+  marcasSeleccionadas: string[] = [];
+
+  precioMin = 0;
+  precioMax = 0;
+
+  precioRangoMin = 0;
+  precioRangoMax = 0;
+
+  showMobileFilters = false;
+
   @ViewChild('carouselContainer', { static: false }) carouselContainer!: ElementRef<HTMLDivElement>;
 
 
@@ -90,6 +100,17 @@ export class ItemListComponent {
 
   }
 
+  initPrecioFiltro(): void {
+    const precios = this.items.map(i => i.PrecioVenta);
+
+    this.precioRangoMin = Math.min(...precios);
+    this.precioRangoMax = Math.max(...precios);
+
+    // Valores iniciales
+    this.precioMin = this.precioRangoMin;
+    this.precioMax = this.precioRangoMax;
+  }
+
   ngOnDestroy(): void {
     this.stopAutoScroll();
   }
@@ -128,6 +149,8 @@ export class ItemListComponent {
       this.fetchItems(this.param2);
       this.onFilterByMarca();
 
+
+
       this.getFavorite(this.cliente.Codigo);
 
       const filtro = this.param2.toLowerCase();
@@ -144,6 +167,20 @@ export class ItemListComponent {
       console.warn('Ambos campos deben estar llenos para realizar la búsqueda');
 
     }
+  }
+
+  onPrecioMinChange(): void {
+    if (this.precioMin > this.precioMax) {
+      this.precioMin = this.precioMax;
+    }
+    this.aplicarFiltros();
+  }
+
+  onPrecioMaxChange(): void {
+    if (this.precioMax < this.precioMin) {
+      this.precioMax = this.precioMin;
+    }
+    this.aplicarFiltros();
   }
 
   private fetchItems(param2: string): void {
@@ -173,6 +210,7 @@ export class ItemListComponent {
     this.itemService.getItems(param2, this.cliente.Codigo).subscribe(
       (data) => {
         this.items = data;
+        this.initPrecioFiltro();
         this.groupItemsByMarca();
         this.onFilterByMarca();
         this.marcas = [...new Set(this.items.map(item => item.Marca))];
@@ -199,6 +237,52 @@ export class ItemListComponent {
       }
     );
 
+  }
+
+  toggleMarca(marca: string, event: any): void {
+    if (event.target.checked) {
+      this.marcasSeleccionadas.push(marca);
+    } else {
+      this.marcasSeleccionadas = this.marcasSeleccionadas.filter(m => m !== marca);
+    }
+
+    this.aplicarFiltros();
+  }
+
+  aplicarFiltros(): void {
+    let filtrados = [...this.items];
+
+    // FILTRO MARCA
+    if (this.marcasSeleccionadas.length > 0) {
+      filtrados = filtrados.filter(item =>
+        this.marcasSeleccionadas.includes(item.Marca)
+      );
+    }
+
+    // FILTRO PRECIO
+    if (this.precioMin !== null) {
+      filtrados = filtrados.filter(item => item.PrecioVenta >= this.precioMin!);
+    }
+
+    if (this.precioMax !== null) {
+      filtrados = filtrados.filter(item => item.PrecioVenta <= this.precioMax!);
+    }
+
+    // AGRUPAR NUEVAMENTE
+    this.displayedItems = filtrados.reduce((groups: any, item: any) => {
+      if (!groups[item.Marca]) {
+        groups[item.Marca] = [];
+      }
+      groups[item.Marca].push(item);
+      return groups;
+    }, {});
+  }
+
+  limpiarFiltros(): void {
+    this.precioMin = this.precioRangoMin;
+    this.precioMax = this.precioRangoMax;
+    this.marcasSeleccionadas = [];
+    this.displayedItems = { ...this.groupedItems };
   }
 
   private groupItemsByMarca(): void {
@@ -334,12 +418,4 @@ export class ItemListComponent {
     );
     this.startAutoScroll();
   }
-
-
-
-
-
-
-
-
 }
