@@ -22,7 +22,7 @@
     >
       💼 Mis Clientes
     </button>
-    <button class="text-blue-500 text-sm font-medium hover:underline" (click)="goToCatalogo()">📦 Catalogo</button>
+    <button *ngIf="user.rol === 'VENDEDOR'" class="text-blue-500 text-sm font-medium hover:underline" (click)="goToCatalogo()">📦 Catalogo</button>
 
     <button class="text-blue-500 text-sm font-medium relative hover:underline" (click)="toggleCart()">
       🛒 Carrito
