@@ -130,6 +130,9 @@ export class PerfilComponent implements OnInit {
   goToClientes(): void{
     this.router.navigate(['/listClient']);
   }
+  goToCatalogo(): void{
+    this.router.navigate(['/catalogo']);
+  }
 
 
   logout(): void {

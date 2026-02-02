@@ -1,0 +1,172 @@
+<dx-button
+  text="Nuevo Producto Base"
+  icon="plus"
+  type="default"
+  stylingMode="contained"
+  (onClick)="openProductoBasePopup()">
+</dx-button>
+
+<hr />
+
+<dx-data-grid
+  [dataSource]="dataSource"
+  [showBorders]="true"
+  [columnAutoWidth]="true"
+  [rowAlternationEnabled]="true">
+
+  <dxi-column dataField="IdProductoBase" caption="ID" width="80" />
+  <dxi-column dataField="NombreBase" caption="Producto Base" />
+  <dxi-column dataField="NombreLinea" caption="Línea" />
+  <dxi-column dataField="Activo" caption="Activo" dataType="boolean" />
+
+  <!-- VARIANTES -->
+  <dxo-master-detail [enabled]="true" template="variantesTemplate"></dxo-master-detail>
+
+  <div *dxTemplate="let producto of 'variantesTemplate'">
+    <dx-data-grid
+      [dataSource]="producto.data.Variantes"
+      [showBorders]="true"
+      height="260">
+
+      <dxi-column dataField="NombreVariante" caption="Variante" />
+      <dxi-column dataField="Orden" caption="Orden" width="80" />
+
+      <!-- VALORES -->
+      <dxo-master-detail [enabled]="true" template="valoresTemplate"></dxo-master-detail>
+
+      <div *dxTemplate="let variante of 'valoresTemplate'">
+        <dx-data-grid
+          [dataSource]="variante.data.Valores"
+          [showBorders]="true"
+          height="220">
+
+          <dxo-editing
+            mode="row"
+            [allowAdding]="true"
+            [allowUpdating]="true"
+            [allowDeleting]="true"
+            [useIcons]="true">
+          </dxo-editing>
+
+          <dxi-column dataField="Valor" caption="Valor" />
+          <dxi-column dataField="Orden" caption="Orden" width="80" />
+        </dx-data-grid>
+      </div>
+    </dx-data-grid>
+  </div>
+
+  <!-- BOTÓN DETALLE -->
+  <dxi-column type="buttons" width="140">
+    <dxi-button
+      icon="edit"
+      hint="Editar"
+      [onClick]="editarProductoBase">
+    </dxi-button>
+
+
+  </dxi-column>
+
+</dx-data-grid>
+<dx-popup
+  [(visible)]="popupProductoBaseVisible"
+  [title]="modoEdicion ? 'Editar Producto Base' : 'Nuevo Producto Base'"
+  [width]="600"
+  [height]="500"
+  [showCloseButton]="true">
+
+  <dx-form
+    [formData]="productoBaseForm"
+    [colCount]="1">
+
+    <dxi-item
+      dataField="LineaId"
+      editorType="dxSelectBox"
+      [editorOptions]="{
+        dataSource: lineas,
+        displayExpr: 'Nombre',
+        valueExpr: 'IdLinea'
+      }"
+      label="{ text: 'Línea' }"
+      [isRequired]="true">
+    </dxi-item>
+
+    <dxi-item
+      dataField="NombreBase"
+      label="{ text: 'Nombre Producto Base' }"
+      [isRequired]="true">
+    </dxi-item>
+
+    <dxi-item
+  dataField="VariantesSeleccionadas"
+  editorType="dxTagBox"
+  label="{ text: 'Variantes aplicables' }"
+  [editorOptions]="{
+    dataSource: variantesDisponibles,
+    displayExpr: 'Variante.Nombre',
+    valueExpr: 'Variante.IdVariante',
+    showSelectionControls: true,
+    applyValueMode: 'useButtons',
+    onValueChanged: onVariantesChanged
+  }">
+</dxi-item>
+
+<dxi-item
+  itemType="group"
+  caption="Configuración de variantes"
+  *ngIf="variantesConfiguradas.length > 0">
+
+  <div *dxTemplate="let data of 'content'">
+
+   <!-- <pre>{{ variantesConfiguradas | json }}</pre> -->
+
+   
+
+    <div *ngFor="let variante of variantesConfiguradas" style="margin-bottom: 20px">
+
+
+
+      <h4>{{ variante.Nombre }}</h4>
+
+      <dx-tag-box
+      [dataSource]="variante.Valores"
+      displayExpr="Valor"
+      valueExpr="IdValor"
+      [(value)]="variante.ValoresSeleccionados"
+      [showSelectionControls]="true"
+      applyValueMode="useButtons">
+    </dx-tag-box>
+
+    </div>
+
+  </div>
+</dxi-item>
+
+    <dxi-item
+      dataField="Activo"
+      editorType="dxCheckBox"
+      label="{ text: 'Activo' }">
+    </dxi-item>
+
+  </dx-form>
+
+  <div class="dx-toolbar dx-toolbar-bottom">
+    <dx-button
+      text="Guardar"
+      type="success"
+      icon="save"
+      (onClick)="saveProductoBase()">
+    </dx-button>
+
+    <dx-button
+  text="Ver seleccionadas"
+  (onClick)="verVariantesSeleccionadas()">
+    </dx-button>
+
+    <dx-button
+      text="Cancelar"
+      type="danger"
+      icon="close"
+      (onClick)="popupProductoBaseVisible = false">
+    </dx-button>
+  </div>
+</dx-popup>

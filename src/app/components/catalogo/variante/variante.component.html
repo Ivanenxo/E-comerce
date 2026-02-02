@@ -1,0 +1,115 @@
+<dx-button
+  text="Nueva Variante"
+  icon="plus"
+  type="default"
+  stylingMode="contained"
+  (onClick)="openPopup()">
+</dx-button>
+
+
+<dx-data-grid
+  #dataGrid
+  [dataSource]="dataSource"
+  [showBorders]="true"
+  [columnAutoWidth]="true"
+  [rowAlternationEnabled]="true"
+>
+
+
+  <dxi-column dataField="Variante.IdVariante" caption="ID" [allowEditing]="false" width="80" />
+  <dxi-column dataField="Variante.Nombre" caption="Variante" />
+  <dxi-column dataField="Variante.Descripcion" caption="Descripción" />
+  <dxi-column dataField="Variante.Activo" caption="Activo" dataType="boolean" />
+
+  <dxo-master-detail [enabled]="true" template="detailTemplate"></dxo-master-detail>
+
+  <div *dxTemplate="let data of 'detailTemplate'">
+    <dx-data-grid
+      [dataSource]="data.data.Valores"
+      [showBorders]="true"
+      height="250"
+      (onContentReady)="onDetailContentReady($event, data.data)"
+      (onRowInserted)="onValorInserted($event, data.data.Variante.IdVariante)">
+
+      <dxo-editing
+        mode="row"
+        [allowAdding]="true"
+        [allowUpdating]="true"
+        [useIcons]="true">
+      </dxo-editing>
+
+      <dxi-column dataField="IdValor" caption="ID" [allowEditing]="false" width="80" />
+      <dxi-column dataField="Valor" caption="Valor" />
+      <dxi-column dataField="Activo" caption="Activo" dataType="boolean" />
+    </dx-data-grid>
+  </div>
+
+  <dxi-column type="buttons" width="100">
+    <dxi-button
+      icon="edit"
+      hint="Editar"
+      [onClick]="editVariante">
+    </dxi-button>
+  </dxi-column>
+
+</dx-data-grid>
+
+<dx-popup
+  [(visible)]="popupVisible"
+  [title]="popupTitle"
+  [width]="700"
+  [height]="550"
+  [showCloseButton]="true">
+
+  <dx-form
+    [formData]="form.variante"
+    [colCount]="1">
+
+    <dxi-item dataField="Nombre" [isRequired]="true" label="{ text: 'Nombre' }"></dxi-item>
+    <dxi-item dataField="Descripcion" label="{ text: 'Descripción' }"></dxi-item>
+
+    <dxi-item
+      dataField="Activo"
+      editorType="dxCheckBox"
+      label="{ text: 'Activo' }">
+    </dxi-item>
+
+  </dx-form>
+
+  <h4 style="margin-top: 15px;">Valores</h4>
+
+  <dx-data-grid
+    [dataSource]="form.valores"
+    [showBorders]="true"
+    height="200">
+
+    <dxo-editing
+      mode="row"
+      [allowAdding]="true"
+      [allowDeleting]="true"
+      [allowUpdating]="true">
+    </dxo-editing>
+
+    <dxi-column dataField="Valor" caption="Valor" [validationRules]="[{ type: 'required' }]" />
+    <dxi-column dataField="Activo" caption="Activo" dataType="boolean" />
+
+  </dx-data-grid>
+
+  <div class="dx-toolbar dx-toolbar-bottom">
+    <dx-button
+      text="Guardar"
+      type="success"
+      icon="save"
+      (onClick)="saveVariante()">
+    </dx-button>
+
+    <dx-button
+      text="Cancelar"
+      type="danger"
+      icon="close"
+      (onClick)="popupVisible = false">
+    </dx-button>
+  </div>
+
+</dx-popup>
+

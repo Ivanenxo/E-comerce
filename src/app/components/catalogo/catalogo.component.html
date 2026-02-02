@@ -1,0 +1,31 @@
+<h2 class="text-xl font-semibold mb-4">📦 Catálogo</h2>
+
+<!-- Tabs / Header -->
+<nav class="flex gap-4 border-b mb-6">
+  <a
+    routerLink="variantes"
+    routerLinkActive="active-tab"
+    class="tab"
+  >
+    🧩 Variantes
+  </a>
+
+  <a
+    routerLink="productos"
+    routerLinkActive="active-tab"
+    class="tab"
+  >
+    🗂️ Productos Base
+  </a>
+
+  <a
+    routerLink="item"
+    routerLinkActive="active-tab"
+    class="tab"
+  >
+  🏷️ Productos
+  </a>
+</nav>
+
+<!-- Contenido -->
+<router-outlet></router-outlet>

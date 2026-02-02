@@ -5,6 +5,7 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { OrdenesComponent } from './components/ordenes/ordenes.component';
 import { ListClientComponent } from './components/list-client/list-client.component';
+import { CatalogoComponent } from './components/catalogo/catalogo.component';
 import { AuthGuard } from './auth.guard';
 
 
@@ -14,6 +15,13 @@ const routes: Routes = [
   { path: 'buscar', component: ItemListComponent , canActivate: [AuthGuard] },
   { path: 'ordenes', component: OrdenesComponent},
   { path: 'listClient', component: ListClientComponent},
+  {
+    path: 'catalogo',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('./components/catalogo/catalogo.module')
+        .then(m => m.CatalogoModule)
+  },
   { path: '**', redirectTo: 'login' }
 ];
 

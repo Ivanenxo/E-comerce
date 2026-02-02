@@ -10,20 +10,24 @@ export class AuthService {
 
   private apiUrl = API_URL+ 'api/Login';
 
-  constructor(private http : HttpClient) { }
-  login(cedula: string, password: string): Observable<any> {
-    const body ={
-      User : cedula,
-      Password : password
-    };
-    console.log(body);
-    return this.http.post<any>(`${this.apiUrl}/Autenticate`, body);
+  isLogged = false;
 
+  constructor(private http: HttpClient) {
+    this.isLogged = !!localStorage.getItem('cedula');
+  }
+
+
+  login(cedula: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/Autenticate`, {
+      User: cedula,
+      Password: password
+    });
   }
 
   logout(): void {
     localStorage.clear();
     sessionStorage.clear();
+    this.isLogged = false;
   }
 
   getUserInfo(): any {

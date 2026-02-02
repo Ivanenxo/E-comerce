@@ -35,6 +35,8 @@ export class LoginComponent implements OnInit {
         const cedula = response.User;
         const userName = response.Nombre;
         if (token) {
+
+          this.authService.isLogged = true;
           localStorage.setItem('token', token);
           localStorage.setItem('cedula', cedula);
           localStorage.setItem('username',userName);

@@ -22,7 +22,7 @@ export class ItemService {
     this.selectedItemSource.next(item);
   }
 
-  getItems(param2: string, param3 : string): Observable<any> {
+   getItems(param2: string, param3 : string): Observable<any> {
     const token = localStorage.getItem('token');
     if(token){
       const url = `${this.apiUrl}/${param2}?CodigoCliente=${param3}`;

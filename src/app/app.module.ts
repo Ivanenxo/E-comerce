@@ -11,9 +11,16 @@ import { LoginComponent } from './login/login.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { AuthService } from './services/auth.service';
 import { DxDataGridModule } from 'devextreme-angular';
+import { DxPopupModule } from 'devextreme-angular';
+import { DxFormModule } from 'devextreme-angular';
+import { DxButtonModule } from 'devextreme-angular';
+import { DxCheckBoxModule } from 'devextreme-angular';
 import { OrdenesComponent } from './components/ordenes/ordenes.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ListClientComponent } from './components/list-client/list-client.component';
+import { CatalogoComponent } from './components/catalogo/catalogo.component';
+import { VarianteComponent } from './components/catalogo/variante/variante.component';
+import { CatalogoModule } from './components/catalogo/catalogo.module';
 
 @NgModule({
   declarations: [
@@ -30,7 +37,13 @@ import { ListClientComponent } from './components/list-client/list-client.compon
     AppRoutingModule,
     HttpClientModule,
     DxDataGridModule,
-    FormsModule
+    DxPopupModule,
+    DxFormModule,
+    DxButtonModule,
+    DxCheckBoxModule,
+    FormsModule,
+    AppRoutingModule,
+    CatalogoModule
   ],
   providers: [AuthService],
   bootstrap: [AppComponent]

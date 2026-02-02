@@ -1,0 +1,144 @@
+<dx-button
+  text="Nuevo Producto"
+  icon="plus"
+  (onClick)="nuevoProducto()">
+</dx-button>
+
+<hr />
+
+
+<dx-data-grid
+  [dataSource]="productos"
+  [showBorders]="true"
+  [columnAutoWidth]="true">
+
+  <dxo-search-panel
+    [visible]="true"
+    [width]="250"
+    placeholder="Buscar producto...">
+  </dxo-search-panel>
+
+  <dxo-filter-row [visible]="true"></dxo-filter-row>
+
+  <dxi-column dataField="Marca" />
+  <dxi-column dataField="Referencia" />
+  <dxi-column dataField="NombreBase" caption="Producto Base" />
+  <dxi-column dataField="PrecioVenta01" caption="Precio 1" format="currency" />
+  <dxi-column dataField="PrecioVenta02" caption="Precio 2" format="currency" />
+  <dxi-column dataField="PrecioVenta03" caption="Precio 3" format="currency" />
+  <dxi-column dataField="PrecioVenta04" caption="Precio 4" format="currency" />
+  <dxi-column dataField="PrecioVenta05" caption="Precio 5" format="currency" />
+
+  <dxi-column type="buttons" width="140">
+
+    <dxi-button icon="edit" hint="Editar" [onClick]="editarProducto"></dxi-button>
+  </dxi-column>
+
+</dx-data-grid>
+
+<dx-popup
+  [(visible)]="popupEditarVisible"
+  (onShown)="onPopupShown()"
+  [title]="popupTitle"
+  [width]="750"
+  [height]="650">
+
+  <!-- Tabs -->
+  <dx-tabs [(selectedIndex)]="tabIndex" [items]="tabs">
+    <div *dxTemplate="let item of 'item'">
+      {{ item.title }}
+    </div>
+  </dx-tabs>
+
+  <!-- TAB 1 -->
+  <div *ngIf="tabIndex === 0" class="mt-3">
+
+    <dx-form [formData]="productoForm" [colCount]="1">
+
+
+
+      <dxi-item
+
+        dataField="ProductoBaseId"
+        label="Producto Base"
+        editorType="dxSelectBox"
+        [editorOptions]="{
+          dataSource: productosBase,
+          displayExpr: 'Nombre',
+          valueExpr: 'Id',
+          placeholder: 'Seleccione un producto base',
+          onValueChanged: onProductoBaseChange
+        }">
+      </dxi-item>
+
+      <dxi-item dataField="Marca" />
+      <dxi-item dataField="Referencia" />
+      <dxi-item
+      dataField="Descripcion"
+      [label]="{ text: 'Descripción', location: 'top' }"
+      itemType="simple">
+
+      <div *dxTemplate>
+        <textarea
+        class="dx-texteditor-input descripcion-fija"
+        [value]="productoForm.Descripcion"
+        readonly>
+        </textarea>
+      </div>
+
+    </dxi-item>
+
+      <dxi-item dataField="NombreComercial"  [editorOptions]="{
+        readOnly: true
+      }" />
+
+      <!-- VARIANTES -->
+      <dxi-item
+        itemType="group"
+        caption="Configuración de Variantes"
+        *ngIf="variantesEditar.length > 0">
+
+        <div class="mt-3">
+          <div *ngFor="let variante of variantesEditar" class="mb-3">
+
+            <label class="dx-field-label fw-bold">
+              {{ variante.NombreVariante }}
+            </label>
+
+            <dx-select-box
+              [dataSource]="variante.ValoresDisponibles"
+              displayExpr="Valor"
+              valueExpr="ValorId"
+              [(value)]="variante.ValorSeleccionado"
+              [placeholder]="'Seleccione ' + variante.NombreVariante"
+              [disabled]="variante.ValoresDisponibles.length === 1">
+            </dx-select-box>
+
+          </div>
+        </div>
+
+      </dxi-item>
+
+    </dx-form>
+  </div>
+
+  <!-- TAB 2 -->
+  <div *ngIf="tabIndex === 1" class="mt-3">
+    <dx-form [formData]="productoForm" [colCount]="1">
+      <dxi-item dataField="PrecioVenta01" editorType="dxNumberBox" label="Precio 1" />
+      <dxi-item dataField="PrecioVenta02" editorType="dxNumberBox" label="Precio 2" />
+      <dxi-item dataField="PrecioVenta03" editorType="dxNumberBox" label="Precio 3" />
+      <dxi-item dataField="PrecioVenta04" editorType="dxNumberBox" label="Precio 4" />
+      <dxi-item dataField="PrecioVenta05" editorType="dxNumberBox" label="Precio 5" />
+    </dx-form>
+  </div>
+
+  <!-- BOTONES -->
+  <div class="dx-toolbar dx-toolbar-bottom botones-popup">
+    <dx-button text="Guardar" type="success" (onClick)="guardarEdicion()"></dx-button>
+    <dx-button text="Cancelar" type="danger" (onClick)="popupEditarVisible=false"></dx-button>
+  </div>
+
+</dx-popup>
+
+
